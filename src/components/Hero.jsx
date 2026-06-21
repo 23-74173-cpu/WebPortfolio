@@ -1,10 +1,29 @@
-import { stats } from '../data/content'
+import { useState, useEffect } from 'react'
+import { personal, stats } from '../data/content'
 
 export default function Hero() {
+  const [mounted, setMounted] = useState(false)
+  const [pastHero, setPastHero] = useState(false)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setMounted(true))
+  }, [])
+
+  useEffect(() => {
+    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.85)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <section
       id="hero"
       className="relative min-h-screen flex flex-col items-center px-5 pt-28 sm:pt-32 overflow-hidden"
+      style={{
+        transition: 'opacity 400ms ease-out',
+        opacity: mounted ? 1 : 0,
+      }}
     >
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(42,125,225,0.06)_0%,_transparent_70%)]" />
@@ -43,10 +62,10 @@ export default function Hero() {
 
         <div className="mt-8 motion-safe:animate-boot-in opacity-0" style={{ animationDelay: '500ms' }}>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-body font-semibold" style={{ color: 'var(--text-body)' }}>
-            John Eduard De Villa
+            {personal.name}
           </h1>
           <p className="font-body text-sm sm:text-base mt-1 text-dim">
-            Full-stack Developer &middot; Nasugbu, Batangas
+            {personal.title} &middot; {personal.location}
           </p>
         </div>
 
@@ -55,34 +74,15 @@ export default function Hero() {
             From EHR schema design to IoT sensor pipelines. I build production systems for real clients while finishing my degree.
           </p>
         </div>
-
-        <div className="mt-10 flex items-center justify-center gap-4 motion-safe:animate-boot-in opacity-0" style={{ animationDelay: '900ms' }}>
-          <a
-            href="#projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-signal text-paper text-sm font-medium rounded hover:bg-signal-dark transition-colors font-body"
-          >
-            View Projects
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
-          <a
-            href="/resume.pdf"
-            download
-            className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded hover:border-safety hover:text-safety transition-colors font-body"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--text-ultra-subtle)' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-            </svg>
-            Download Resume
-          </a>
-        </div>
       </div>
 
       <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 motion-safe:animate-pulse-slow"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 transition-all duration-300 motion-safe:animate-bounce-subtle"
         aria-hidden="true"
+        style={{
+          opacity: pastHero ? 0 : 1,
+          pointerEvents: pastHero ? 'none' : 'auto',
+        }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--text-ultra-faint)]">
           <path d="M12 5v14M5 12l7 7 7-7" />

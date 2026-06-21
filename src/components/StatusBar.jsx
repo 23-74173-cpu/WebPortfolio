@@ -13,11 +13,12 @@ const sections = [
 export default function StatusBar() {
   const [active, setActive] = useState(sections[0].label)
   const [visible, setVisible] = useState(true)
-  const [reducedMotion, setReducedMotion] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReducedMotion(mq.matches)
     const onMqChange = (e) => setReducedMotion(e.matches)
     mq.addEventListener('change', onMqChange)
 
@@ -54,13 +55,18 @@ export default function StatusBar() {
 
   return (
     <div
-      className={`fixed bottom-0 inset-x-0 z-40 bg-navy-900/80 backdrop-blur-sm border-t border-navy-700/40 hidden sm:block transition-opacity ${
+      className={`fixed bottom-0 inset-x-0 z-40 hidden sm:block transition-opacity ${
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       } ${reducedMotion ? 'duration-0' : 'duration-150'}`}
       aria-hidden="true"
+      style={{
+        backgroundColor: 'var(--bg-statusbar)',
+        borderTop: '1px solid var(--bg-statusbar-border)',
+        backdropFilter: 'blur(4px)',
+      }}
     >
       <div className="max-w-6xl mx-auto px-5 h-8 flex items-center">
-        <span key={active} className="text-[10px] font-mono tracking-wider text-cool-gray/50 animate-fade-in">
+        <span key={active} className="text-[10px] font-mono tracking-wider animate-fade-in text-ultra-faint">
           {active}
         </span>
       </div>

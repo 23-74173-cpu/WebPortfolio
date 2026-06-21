@@ -3,9 +3,14 @@ export const personal = {
   initials: 'JEDV',
   title: 'Full-stack Developer',
   location: 'Nasugbu, Batangas, Philippines',
-  email: 'johneduarddevilla09@gmail.com',
-  phone: '+63 970 300 3516',
-   education: '4th-year BSIT, Business Analytics, Batangas State University, ARASOF Nasugbu',
+  email: 'johneduarddevilla09\u0040gmail\u002Ecom',
+  resumeUrl: '/resume.pdf',
+  social: {
+    github: 'https://github.com/23-74173-cpu',
+    linkedin: 'https://www.linkedin.com/in/john-eduard-de-villa-78689935a/',
+    facebook: 'https://web.facebook.com/joed.devilla/',
+  },
+  education: '4th-year BSIT, Business Analytics, Batangas State University, ARASOF Nasugbu',
   summary:
     'I build real, deployed systems for actual clients, not just class exercises. From EHR schema design to IoT sensor pipelines, I work solo, end-to-end, delivering production software while finishing my degree.',
   approach:
@@ -63,6 +68,8 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'JWT Auth', 'AES-256-GCM'],
     status: 'active',
+    link: null,
+    impact: 'Streamlining patient data management for an entire medical center',
   },
   {
     id: 'layrate',
@@ -75,6 +82,8 @@ export const projects = [
     ],
     stack: ['Laravel', 'MySQL', 'Python', 'Raspberry Pi', 'Arduino', 'SARIMA', 'XGBoost'],
     status: 'in-progress',
+    link: null,
+    impact: 'Bringing data-driven insights to offline poultry farms',
   },
   {
     id: 'talent-scout',
@@ -86,6 +95,8 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
+    link: null,
+    impact: 'Connecting local talent with employers through AI-powered matching',
   },
   {
     id: 'hairconnect',
@@ -96,6 +107,8 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
+    link: null,
+    impact: 'Helping users discover their perfect hairstyle with AI',
   },
   {
     id: 'jr-photography',
@@ -106,6 +119,8 @@ export const projects = [
     ],
     stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
     status: 'shipped',
+    link: null,
+    impact: 'Simplifying appointment booking for a real photography studio',
   },
   {
     id: 'plant-selling',
@@ -116,6 +131,8 @@ export const projects = [
     ],
     stack: ['Java (Swing)', 'MySQL'],
     status: 'shipped',
+    link: null,
+    impact: 'Digitizing POS and inventory for a local plant business',
   },
   {
     id: 'csharp-systems',
@@ -126,6 +143,8 @@ export const projects = [
     ],
     stack: ['C#', 'MySQL'],
     status: 'shipped',
+    link: null,
+    impact: 'Maximizing code reuse across three commissioned desktop applications',
   },
   {
     id: 'student-portal',
@@ -137,6 +156,8 @@ export const projects = [
     ],
     stack: ['Java (Swing)', 'MySQL', 'JasperReports'],
     status: 'shipped',
+    link: null,
+    impact: 'Automating academic report generation with JasperReports',
   },
 ]
 

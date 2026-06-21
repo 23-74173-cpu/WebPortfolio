@@ -32,6 +32,7 @@ export default {
         'fade-in': 'fadeIn 0.8s ease-out forwards',
         'slide-up': 'slideUp 0.6s ease-out forwards',
         'pulse-slow': 'pulseSubtle 3s ease-in-out infinite',
+        'bounce-subtle': 'bounceSubtle 1.5s ease-in-out infinite',
       },
       keyframes: {
         bootIn: {
@@ -49,6 +50,10 @@ export default {
         pulseSubtle: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.7' },
+        },
+        bounceSubtle: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
         },
       },
     },

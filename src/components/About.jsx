@@ -1,12 +1,24 @@
+import { useInView } from '../hooks/useInView'
 import { personal } from '../data/content'
 
 export default function About() {
+  const [ref, inView] = useInView({ threshold: 0.1 })
+
   return (
-    <section id="about" className="py-24 sm:py-32 px-5" style={{ backgroundColor: 'var(--bg-body)' }}>
+    <section
+      id="about"
+      ref={ref}
+      className="py-28 sm:py-36 px-5 transition-all duration-500 ease-out"
+      style={{
+        backgroundColor: 'var(--bg-body)',
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(30px)',
+      }}
+    >
       <div className="max-w-6xl mx-auto">
         <span className="section-label">About</span>
         <div className="mt-6 grid md:grid-cols-5 gap-10 md:gap-16">
-          <div className="md:col-span-3">
+          <div className="md:col-span-3" style={{ transitionDelay: '100ms' }}>
             <h2 className="section-heading leading-tight">
               I build for clients,&nbsp;<br className="hidden sm:block" />
               <span className="text-signal">not&nbsp;grades</span>
@@ -19,7 +31,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="md:col-span-2 md:pl-10" style={{ borderLeft: '1px solid var(--about-sidebar-border)' }}>
+          <div className="md:col-span-2 md:pl-10" style={{ borderLeft: '1px solid var(--about-sidebar-border)', transitionDelay: '200ms' }}>
             <h3 className="text-xs font-mono tracking-wider uppercase mb-4 text-dim">Current Status</h3>
             <dl className="space-y-4">
               <div>

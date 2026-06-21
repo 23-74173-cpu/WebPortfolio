@@ -2,14 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+*, *::before, *::after {
+  outline: none !important;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--accent) !important;
+}
+
 :root {
+  --accent: #2A7DE1;
   --bg-body: #0A0F1A;
   --bg-section-alt: #060A14;
+  --bg-contact: #0D1225;
   --bg-navbar: rgba(10, 15, 26, 0.9);
   --bg-navbar-border: rgba(36, 52, 71, 0.5);
   --bg-mobile-menu: rgba(10, 15, 26, 0.95);
   --bg-card: rgba(26, 36, 53, 0.6);
   --bg-card-border: rgba(36, 52, 71, 0.5);
+  --bg-card-border-subtle: rgba(255, 255, 255, 0.06);
   --bg-tag: rgba(36, 52, 71, 0.4);
   --bg-tag-dim: rgba(36, 52, 71, 0.3);
   --bg-statusbar: rgba(10, 15, 26, 0.8);
@@ -24,36 +40,45 @@
   --border-subtle: rgba(36, 52, 71, 0.5);
   --border-line: rgba(36, 52, 71, 0.4);
   --border-divider: rgba(36, 52, 71, 0.25);
+  --card-hover-bg: rgba(42, 58, 78, 0.65);
+  --card-hover-border: rgba(42, 125, 225, 0.25);
+  --badge-hover-filter: brightness(1.15);
   --selection-bg: rgba(42, 125, 225, 0.3);
   --hero-grid: rgba(42, 125, 225, 0.3);
   --about-sidebar-border: rgba(36, 52, 71, 0.5);
 }
 
 .light {
-  --bg-body: #F2F5FA;
-  --bg-section-alt: #E8EDF4;
-  --bg-navbar: rgba(242, 245, 250, 0.92);
-  --bg-navbar-border: rgba(200, 210, 225, 0.7);
-  --bg-mobile-menu: rgba(242, 245, 250, 0.97);
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-border: rgba(200, 210, 225, 0.7);
-  --bg-tag: rgba(200, 210, 225, 0.6);
-  --bg-tag-dim: rgba(200, 210, 225, 0.4);
-  --bg-statusbar: rgba(242, 245, 250, 0.85);
-  --bg-statusbar-border: rgba(200, 210, 225, 0.5);
-  --text-body: #0A0F1A;
-  --text-muted: #4A5568;
-  --text-dim: rgba(74, 85, 104, 0.8);
-  --text-faint: rgba(74, 85, 104, 0.6);
-  --text-extra-faint: rgba(74, 85, 104, 0.5);
-  --text-ultra-faint: rgba(74, 85, 104, 0.4);
-  --text-ultra-subtle: rgba(74, 85, 104, 0.3);
-  --border-subtle: rgba(200, 210, 225, 0.7);
-  --border-line: rgba(200, 210, 225, 0.5);
-  --border-divider: rgba(200, 210, 225, 0.3);
+  --accent: #2A7DE1;
+  --bg-body: #F5F5F5;
+  --bg-section-alt: #EBEBEB;
+  --bg-contact: #EFEFEF;
+  --bg-navbar: rgba(245, 245, 245, 0.92);
+  --bg-navbar-border: rgba(200, 200, 210, 0.8);
+  --bg-mobile-menu: rgba(245, 245, 245, 0.97);
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-border: rgba(200, 200, 210, 0.7);
+  --bg-card-border-subtle: transparent;
+  --bg-tag: rgba(42, 125, 225, 0.1);
+  --bg-tag-dim: rgba(42, 125, 225, 0.06);
+  --bg-statusbar: rgba(245, 245, 245, 0.85);
+  --bg-statusbar-border: rgba(200, 200, 210, 0.5);
+  --text-body: #111827;
+  --text-muted: #374151;
+  --text-dim: rgba(55, 65, 81, 0.8);
+  --text-faint: rgba(55, 65, 81, 0.6);
+  --text-extra-faint: rgba(55, 65, 81, 0.5);
+  --text-ultra-faint: rgba(55, 65, 81, 0.4);
+  --text-ultra-subtle: rgba(55, 65, 81, 0.3);
+  --border-subtle: rgba(200, 200, 210, 0.7);
+  --border-line: rgba(200, 200, 210, 0.5);
+  --border-divider: rgba(200, 200, 210, 0.3);
+  --card-hover-bg: rgba(180, 180, 190, 0.5);
+  --card-hover-border: rgba(42, 125, 225, 0.18);
+  --badge-hover-filter: saturate(1.2);
   --selection-bg: rgba(42, 125, 225, 0.2);
   --hero-grid: rgba(42, 125, 225, 0.15);
-  --about-sidebar-border: rgba(200, 210, 225, 0.7);
+  --about-sidebar-border: rgba(200, 200, 210, 0.7);
 }
 
 @layer base {
@@ -66,7 +91,8 @@
     @apply font-body antialiased;
     background-color: var(--bg-body);
     color: var(--text-body);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
   }
 
   ::selection {
@@ -74,8 +100,8 @@
     color: var(--text-body);
   }
 
-  :focus-visible {
-    @apply outline-2 outline-offset-2 outline-signal;
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -92,7 +118,7 @@
   }
 
   .section-heading {
-    @apply text-2xl sm:text-3xl font-display;
+    @apply text-3xl sm:text-4xl font-display tracking-tight;
     color: var(--text-body);
   }
 
@@ -111,12 +137,31 @@
   .tag-bg-dim {
     background-color: var(--bg-tag-dim);
   }
+
+  .text-extra-faint {
+    color: var(--text-extra-faint);
+  }
+
+  .text-ultra-faint {
+    color: var(--text-ultra-faint);
+  }
+
+  .text-ultra-subtle {
+    color: var(--text-ultra-subtle);
+  }
+}
+
+@keyframes scrollProgress {
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .motion-safe\:animate-boot-in,
   .motion-safe\:animate-fade-in,
   .motion-safe\:animate-slide-up,
+  .animate-scroll-progress,
+  .fade-in-section,
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
