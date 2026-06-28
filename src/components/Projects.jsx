@@ -1,5 +1,15 @@
+import { useState } from 'react'
 import { useInView } from '../hooks/useInView'
+import { useMouseGlow } from '../hooks/useMouseGlow'
 import { projects } from '../data/content'
+import hilomImg from '../assets/project-hilom.svg'
+import layrateImg from '../assets/project-layrate.svg'
+import defaultImg from '../assets/project-default.svg'
+
+const projectImageMap = {
+  hilom: hilomImg,
+  layrate: layrateImg,
+}
 
 const statusConfig = {
   'active': { label: 'Active Development', class: 'bg-signal/15 text-signal' },
@@ -7,8 +17,29 @@ const statusConfig = {
   'shipped': { label: 'Shipped', class: 'bg-emerald-500/15 text-emerald-400' },
 }
 
+const filterOptions = [
+  { label: 'All', value: 'all' },
+  { label: 'Shipped', value: 'shipped' },
+  { label: 'In Progress', value: 'in-progress' },
+  { label: 'Active', value: 'active' },
+]
+
+const techPillColors = [
+  { bg: 'rgba(42,125,225,0.12)', text: '#5A9DEF' },
+  { bg: 'rgba(56,189,248,0.12)', text: '#38BDF8' },
+  { bg: 'rgba(16,185,129,0.12)', text: '#34D399' },
+  { bg: 'rgba(139,92,246,0.12)', text: '#A78BFA' },
+  { bg: 'rgba(251,146,60,0.12)', text: '#FB923C' },
+  { bg: 'rgba(236,72,153,0.12)', text: '#F472B6' },
+]
+
 export default function Projects() {
   const [ref, inView] = useInView({ threshold: 0.1 })
+  const [filter, setFilter] = useState('all')
+
+  const filtered = filter === 'all'
+    ? projects
+    : projects.filter(p => p.status === filter)
 
   return (
     <section
@@ -29,8 +60,24 @@ export default function Projects() {
           </h2>
         </div>
 
-        <div className="mt-10 space-y-8">
-          {projects.map((project, i) => (
+        <div className="mt-8 flex flex-wrap gap-2">
+          {filterOptions.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setFilter(opt.value)}
+              className="text-xs font-mono px-3 py-1.5 rounded-full transition-all duration-150"
+              style={{
+                backgroundColor: filter === opt.value ? 'var(--accent)' : 'var(--bg-tag)',
+                color: filter === opt.value ? '#fff' : 'var(--text-muted)',
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-6 space-y-8">
+          {filtered.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
@@ -41,13 +88,19 @@ export default function Projects() {
 
 function ProjectCard({ project, index }) {
   const [cardRef, cardInView] = useInView({ threshold: 0.15 })
+  const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
   const status = statusConfig[project.status]
   const delay = index * 100
+  const imgSrc = projectImageMap[project.id] || defaultImg
 
   return (
     <article
-      ref={cardRef}
-      className={`rounded-lg p-6 sm:p-8 border-l-4 group transition-all duration-150 motion-safe:opacity-0 transform ${
+      ref={(el) => {
+        cardRef.current = el
+        glowRef.current = el
+      }}
+      {...glowHandlers}
+      className={`relative overflow-hidden rounded-lg p-6 sm:p-8 group transition-all duration-150 motion-safe:opacity-0 transform ${
         project.status === 'in-progress'
           ? 'border-l-safety'
           : 'border-l-signal'
@@ -62,11 +115,19 @@ function ProjectCard({ project, index }) {
         borderStyle: 'solid',
         boxShadow: 'inset 0 0 0 1px var(--bg-card-border-subtle)',
         opacity: cardInView ? 1 : 0,
-        '--tw-translate-y': cardInView ? '0px' : '6px',
+        transform: cardInView ? 'translateY(0)' : 'translateY(6px)',
         transitionDelay: cardInView ? '0ms' : `${delay}ms`,
       }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+      <div
+        className={`card-glow ${glowVisible ? 'card-glow--visible' : ''}`}
+        aria-hidden="true"
+        style={{
+          background: `radial-gradient(var(--glow-radius) circle at ${glowPos.x}% ${glowPos.y}%, var(--glow-color), transparent 40%)`,
+        }}
+      />
+
+      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             <a
@@ -89,35 +150,54 @@ function ProjectCard({ project, index }) {
             </span>
           </div>
           <p className="text-sm font-body mt-1 text-dim">{project.subtitle}</p>
+
+          <ul className="mt-4 space-y-1.5">
+            {project.description.map((point, i) => (
+              <li key={i} className="text-sm font-body pl-4 relative leading-relaxed text-dim">
+                <span className="absolute left-0 top-[0.6em] w-1.5 h-[1.5px]" aria-hidden="true" style={{ backgroundColor: 'var(--text-ultra-subtle)' }} />
+                {point}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-3 text-xs font-mono text-dim">
+            Impact: <span className="text-signal italic">{project.impact || 'Placeholder — actual metrics coming soon'}</span>
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {project.stack.map((tech, ti) => (
+              <span
+                key={tech}
+                className="text-[11px] font-mono px-2 py-0.5 rounded transition-colors duration-150"
+                style={{
+                  backgroundColor: techPillColors[ti % techPillColors.length].bg,
+                  color: techPillColors[ti % techPillColors.length].text,
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <ul className="mt-4 space-y-1.5">
-        {project.description.map((point, i) => (
-          <li key={i} className="text-sm font-body pl-4 relative leading-relaxed text-dim">
-            <span className="absolute left-0 top-[0.6em] w-1.5 h-[1.5px]" aria-hidden="true" style={{ backgroundColor: 'var(--text-ultra-subtle)' }} />
-            {point}
-          </li>
-        ))}
-      </ul>
-
-      <p className="mt-3 text-xs font-mono italic text-dim">
-        Impact: {project.impact || 'Placeholder — actual metrics coming soon'}
-      </p>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {project.stack.map((tech) => (
-          <span
-            key={tech}
-            className="text-[11px] font-mono px-2 py-0.5 rounded"
+        <div className="lg:w-72 xl:w-80 shrink-0 flex items-center justify-center">
+          <div
+            className="rounded-lg overflow-hidden border project-card-image-wrapper"
             style={{
-              color: 'var(--text-faint)',
-              backgroundColor: 'var(--bg-tag-dim)',
+              borderColor: 'var(--bg-card-border)',
+              backgroundColor: 'var(--bg-section-alt)',
             }}
           >
-            {tech}
-          </span>
-        ))}
+            <img
+              src={imgSrc}
+              alt={`${project.title} screenshot`}
+              className="project-card-image w-full h-auto block"
+              loading="lazy"
+              width={800}
+              height={450}
+            />
+          </div>
+        </div>
       </div>
     </article>
   )

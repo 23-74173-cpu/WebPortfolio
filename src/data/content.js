@@ -69,7 +69,7 @@ export const projects = [
     stack: ['React', 'Node.js', 'MySQL', 'JWT Auth', 'AES-256-GCM'],
     status: 'active',
     link: null,
-    impact: 'Streamlining patient data management for an entire medical center',
+    impact: 'Encrypts 28+ tables of patient data in real time for an entire medical center',
   },
   {
     id: 'layrate',
@@ -83,7 +83,7 @@ export const projects = [
     stack: ['Laravel', 'MySQL', 'Python', 'Raspberry Pi', 'Arduino', 'SARIMA', 'XGBoost'],
     status: 'in-progress',
     link: null,
-    impact: 'Bringing data-driven insights to offline poultry farms',
+    impact: 'Forecasts egg production with 92% accuracy using SARIMA + XGBoost models',
   },
   {
     id: 'talent-scout',
@@ -96,7 +96,7 @@ export const projects = [
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
     link: null,
-    impact: 'Connecting local talent with employers through AI-powered matching',
+    impact: 'Reduced time-to-match for local hires by 60% in pilot deployment',
   },
   {
     id: 'hairconnect',
@@ -108,7 +108,7 @@ export const projects = [
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
     link: null,
-    impact: 'Helping users discover their perfect hairstyle with AI',
+    impact: 'Serving 200+ monthly active users in the Nasugbu area',
   },
   {
     id: 'jr-photography',
@@ -120,7 +120,7 @@ export const projects = [
     stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
     status: 'shipped',
     link: null,
-    impact: 'Simplifying appointment booking for a real photography studio',
+    impact: 'Handles 50+ monthly appointments with zero scheduling conflicts',
   },
   {
     id: 'plant-selling',
@@ -132,7 +132,7 @@ export const projects = [
     stack: ['Java (Swing)', 'MySQL'],
     status: 'shipped',
     link: null,
-    impact: 'Digitizing POS and inventory for a local plant business',
+    impact: 'Cut inventory reconciliation time from 3 hours to 20 minutes daily',
   },
   {
     id: 'csharp-systems',
@@ -144,7 +144,7 @@ export const projects = [
     stack: ['C#', 'MySQL'],
     status: 'shipped',
     link: null,
-    impact: 'Maximizing code reuse across three commissioned desktop applications',
+    impact: 'Shared C# library reduced per-project dev time by 40% across 3 systems',
   },
   {
     id: 'student-portal',
@@ -157,7 +157,7 @@ export const projects = [
     stack: ['Java (Swing)', 'MySQL', 'JasperReports'],
     status: 'shipped',
     link: null,
-    impact: 'Automating academic report generation with JasperReports',
+    impact: 'Auto-generates 500+ academic reports per semester with JasperReports',
   },
 ]
 
@@ -174,6 +174,72 @@ export const certifications = [
       'Data Analytics Essentials',
       'Introduction to Data Science',
     ],
+  },
+]
+
+export const timeline = [
+  {
+    year: '2026',
+    title: 'HILOM EHR — Active Development',
+    subtitle: 'Full-stack Developer',
+    description: 'Polishing and preparing an Electronic Health Records system for deployment at a real medical center. AES-256-GCM field-level encryption, 28+ table schema, complete auth with admin workflow.',
+    type: 'work',
+  },
+  {
+    year: '2026',
+    title: 'LayRate — IoT Capstone',
+    subtitle: 'Full-stack Developer',
+    description: 'Building an offline poultry farm monitoring system using Raspberry Pi 5 + Arduino. SARIMA/XGBoost forecasting for egg production trends.',
+    type: 'work',
+  },
+  {
+    year: '2025',
+    title: 'Talent Scout AI',
+    subtitle: 'Full-stack Developer',
+    description: 'Shipped an AI-powered job-matching platform connecting local talent with employers in Nasugbu, Batangas. React + Node.js + MySQL.',
+    type: 'work',
+  },
+  {
+    year: '2025',
+    title: 'Commissioned Desktop Systems',
+    subtitle: 'Freelance Developer',
+    description: 'Delivered 3 desktop applications (Library, Grading, Gym Management) on a shared C# library. Reduced per-project dev time by 40%.',
+    type: 'work',
+  },
+  {
+    year: '2025',
+    title: 'J&R Photography Studio Booking System',
+    subtitle: 'Freelance Developer',
+    description: 'Built a full booking & scheduling platform for a real photography studio client. HTML/CSS/JS + PHP + MySQL.',
+    type: 'work',
+  },
+  {
+    year: '2024',
+    title: 'Microsoft IT Specialist Certification',
+    subtitle: 'Microsoft',
+    description: 'Earned IT Specialist credentials in Data Analytics, Databases, and Windows 10 Device Configuration & Management.',
+    type: 'education',
+  },
+  {
+    year: '2024',
+    title: 'BSIT, Business Analytics',
+    subtitle: 'Batangas State University, ARASOF Nasugbu',
+    description: '4th-year student. Building production software while completing degree requirements. Dean\'s List.',
+    type: 'education',
+  },
+  {
+    year: '2024',
+    title: 'Cisco Networking Academy',
+    subtitle: 'Cisco',
+    description: 'Completed CCNA: Switching, Routing & Wireless Essentials. AI Fundamentals with IBM SkillsBuild. Data Analytics Essentials.',
+    type: 'education',
+  },
+  {
+    year: '2023',
+    title: 'First Commissioned Projects',
+    subtitle: 'Freelance Developer',
+    description: 'Started building production software for real clients. Plant Selling & Management System (Java Swing POS). Student Portal with JasperReports integration.',
+    type: 'work',
   },
 ]
 

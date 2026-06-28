@@ -6,11 +6,19 @@ const links = [
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Experience', href: '#experience' },
   { label: 'Certifications', href: '#certifications' },
   { label: 'Contact', href: '#contact' },
 ]
 
-const sectionIds = ['about', 'skills', 'projects', 'certifications', 'contact']
+const sectionIds = ['hero', 'about', 'skills', 'projects', 'experience', 'certifications', 'contact']
+
+function scrollToSection(id) {
+  const el = document.getElementById(id)
+  if (!el) return
+  const y = el.getBoundingClientRect().top + window.scrollY - 56
+  window.scrollTo({ top: y, behavior: 'smooth' })
+}
 
 export default function Navbar() {
   const { toggleTheme, dark } = useTheme()
@@ -60,12 +68,12 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <a href="#" className="font-mono text-sm tracking-wider hover:text-signal transition-colors duration-300 outline-none focus:outline-none focus-visible:outline-none rounded" style={{ color: 'var(--text-muted)' }}>
+          <a href="#" className="font-mono text-sm tracking-wider hover:text-signal transition-colors duration-300 rounded" style={{ color: 'var(--text-muted)' }}>
             {personal.initials}
           </a>
           <button
             onClick={toggleTheme}
-            className="relative p-2 rounded group outline-none focus:outline-none focus-visible:outline-none"
+            className="relative p-2 rounded group"
             aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             <div className="relative w-4 h-4">
@@ -82,7 +90,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="md:hidden p-2 rounded transition-colors hover:bg-[var(--bg-tag)] outline-none focus:outline-none focus-visible:outline-none"
+          className="md:hidden p-2 rounded transition-colors hover:bg-[var(--bg-tag)]"
           onClick={() => setOpen(!open)}
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
@@ -110,9 +118,10 @@ export default function Navbar() {
             return (
               <li key={link.href}>
                 <button
-                  onClick={() => { setOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }}
-                  className="relative block py-2 md:py-0 group outline-none focus:outline-none focus-visible:outline-none rounded"
+                  onClick={() => { setOpen(false); scrollToSection(id) }}
+                  className="relative block py-2 md:py-0 group rounded"
                   aria-label={`Navigate to ${link.label} section`}
+                  aria-current={isActive ? 'true' : undefined}
                 >
                   <span className={`text-base md:text-sm transition-colors duration-150 ${
                     isActive

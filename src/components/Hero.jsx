@@ -26,17 +26,28 @@ export default function Hero() {
       }}
     >
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(42,125,225,0.06)_0%,_transparent_70%)]" />
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0"
           style={{
+            background:
+              'radial-gradient(ellipse at center, var(--orb-1), transparent 70%)',
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            opacity: '0.03',
             backgroundImage: `
-              linear-gradient(rgba(42,125,225,0.3) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(42,125,225,0.3) 1px, transparent 1px)
+              linear-gradient(var(--hero-grid) 1px, transparent 1px),
+              linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px)
             `,
             backgroundSize: '48px 48px',
           }}
         />
+
+        <div className="hero-orb hero-orb--1" style={{ width: '600px', height: '600px', top: '-10%', left: '-5%', background: 'radial-gradient(circle, var(--orb-1), transparent 60%)' }} />
+        <div className="hero-orb hero-orb--2" style={{ width: '400px', height: '400px', bottom: '-5%', right: '-5%', background: 'radial-gradient(circle, var(--orb-2), transparent 60%)' }} />
+        <div className="hero-orb hero-orb--3" style={{ width: '350px', height: '350px', top: '40%', left: '60%', background: 'radial-gradient(circle, var(--orb-3), transparent 60%)' }} />
       </div>
 
       <div className="relative text-center max-w-3xl">

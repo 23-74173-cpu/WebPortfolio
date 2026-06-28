@@ -1,16 +1,54 @@
-# React + Vite
+# John Eduard De Villa — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Full-stack developer portfolio built with React 19, Vite 8, and Tailwind CSS 3.
 
-Currently, two official plugins are available:
+> From EHR schema design to IoT sensor pipelines — production systems for real clients.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+- **Framework:** React 19 + Vite 8
+- **Styling:** Tailwind CSS 3 + CSS Custom Properties (dark/light mode)
+- **Typography:** DM Serif Display (headings), Inter (body), JetBrains Mono (code)
+- **Deployment:** Vercel (with security headers via `vercel.json`)
+- **Design Reference:** Linear-inspired dark-canvas system with signal-blue accent
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Sections
 
-## Expanding the ESLint configuration
+- **Hero** — Systems shipped / sprints left stats
+- **About** — Background, education, and workflow
+- **Skills** — 7 domain groups (Languages, Frontend, Backend, Database, Infrastructure, Analytics, AI-Assisted)
+- **Projects** — 8 featured projects with images, tech stacks, and impact metrics
+- **Certifications** — Microsoft IT Specialist & Cisco Networking Academy
+- **Contact** — Email, social links, résumé download
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+```bash
+npm install
+npm run dev        # dev server at http://localhost:5173
+npm run build      # production build → dist/
+npm run preview    # preview production build
+npm run lint       # ESLint check
+```
+
+## Live Demo
+
+Deployed at: [https://myportfolio.vercel.app](https://myportfolio.vercel.app)
+
+## Project Structure
+
+```
+src/
+├── assets/           # Project placeholder images (SVG)
+├── components/       # 12 React components
+├── context/          # ThemeContext
+├── data/             # Single content source (content.js)
+├── hooks/            # useInView, useTheme
+├── App.jsx           # Root layout
+├── main.jsx          # Entry point
+└── index.css         # Tailwind + CSS custom properties
+```
+
+## License
+
+MIT

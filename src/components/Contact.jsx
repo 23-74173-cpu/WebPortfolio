@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react'
 import { useInView } from '../hooks/useInView'
 import { personal } from '../data/content'
 
@@ -9,6 +10,14 @@ const socialLinks = [
 
 export default function Contact() {
   const [ref, inView] = useInView({ threshold: 0.1 })
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyEmail = useCallback(() => {
+    navigator.clipboard.writeText(personal.email).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    }).catch(() => {})
+  }, [])
 
   return (
     <section
@@ -39,14 +48,47 @@ export default function Contact() {
               <span className="text-xs font-mono tracking-wider uppercase text-extra-faint">
                 Email
               </span>
-              <a
-                href={`mailto:${personal.email}`}
-                rel="noopener noreferrer"
-                className="block mt-0.5 text-sm sm:text-base hover:text-signal transition-colors duration-150 font-body"
-                style={{ color: 'var(--text-body)' }}
-              >
-                {personal.email}
-              </a>
+              <div className="flex items-center gap-2 mt-0.5">
+                <a
+                  href={`mailto:${personal.email}`}
+                  rel="noopener noreferrer"
+                  className="text-sm sm:text-base hover:text-signal transition-colors duration-150 font-body rounded"
+                  style={{ color: 'var(--text-body)' }}
+                >
+                  {personal.email}
+                </a>
+                <button
+                  onClick={handleCopyEmail}
+                  className="relative p-1.5 rounded transition-all duration-150 hover:bg-[var(--bg-tag)] group"
+                  aria-label={copied ? 'Copied' : 'Copy email address'}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--text-muted)"
+                    strokeWidth="2"
+                    className="transition-all duration-150"
+                    style={{ opacity: copied ? 0 : 1, transform: copied ? 'scale(0.5)' : 'scale(1)' }}
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="absolute inset-0 m-auto text-safety transition-all duration-150"
+                    style={{ opacity: copied ? 1 : 0, transform: copied ? 'scale(1)' : 'scale(0.5)' }}
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <div>

@@ -27,6 +27,17 @@ export default {
         body: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
+      fontSize: {
+        'display-xl': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.04em', fontWeight: '600' }],
+        'display-lg': ['2.25rem', { lineHeight: '1.15', letterSpacing: '-0.03em', fontWeight: '600' }],
+        'display-md': ['1.75rem', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '600' }],
+      },
+      borderRadius: {
+        'linear-sm': '6px',
+        'linear-md': '8px',
+        'linear-lg': '12px',
+        'linear-xl': '16px',
+      },
       animation: {
         'boot-in': 'bootIn 0.6s ease-out forwards',
         'fade-in': 'fadeIn 0.8s ease-out forwards',
