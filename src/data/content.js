@@ -19,7 +19,6 @@ export const personal = {
 
 export const stats = {
   systemsShipped: 7,
-  sprintsLeft: 2,
   schemaTables: '28+',
   auditActions: 14,
   clients: 5,

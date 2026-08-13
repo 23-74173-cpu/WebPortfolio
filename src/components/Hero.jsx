@@ -63,10 +63,10 @@ export default function Hero() {
           <span className="text-4xl sm:text-5xl md:text-6xl font-body font-thin text-dim">/</span>
           <div className="text-left">
             <span className="block text-6xl sm:text-7xl md:text-8xl font-bold text-safety font-display leading-none tracking-tight">
-              {stats.sprintsLeft}
+              {stats.clients}
             </span>
             <span className="font-mono text-xs sm:text-sm mt-1 block text-dim">
-              SPRINTS LEFT
+              CLIENTS SERVED
             </span>
           </div>
         </div>
