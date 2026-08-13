@@ -19,7 +19,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center px-5 pt-28 sm:pt-32 overflow-hidden"
+      className="relative min-h-[85svh] flex flex-col items-center justify-center px-5 pt-20 sm:pt-24 pb-24 overflow-hidden"
       style={{
         transition: 'opacity 400ms ease-out',
         opacity: mounted ? 1 : 0,
