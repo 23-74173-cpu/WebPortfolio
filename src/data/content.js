@@ -4,7 +4,7 @@ export const personal = {
   title: 'Full-stack Developer',
   location: 'Nasugbu, Batangas, Philippines',
   email: 'johneduarddevilla09\u0040gmail\u002Ecom',
-  resumeUrl: '/resume.pdf',
+  resumeUrl: '/de-villa-resume.pdf',
   social: {
     github: 'https://github.com/23-74173-cpu',
     linkedin: 'https://www.linkedin.com/in/john-eduard-de-villa-78689935a/',
@@ -242,12 +242,3 @@ export const timeline = [
     type: 'work',
   },
 ]
-
-export const statusMessages = {
-  hero: 'STATUS: 8 SYSTEMS · STUDENT · SHIPPING',
-  about: 'PROFILE: FULL-STACK · BSIT-BA · CLIENT-FIRST',
-  skills: 'STACK: 10 LANGUAGES · 7 DOMAINS · AI-ASSISTED',
-  projects: 'PROJECTS: 7 SHIPPED · 1 IN PROGRESS · REAL LIMITS',
-  certifications: 'CERTIFIED: MICROSOFT IT SPECIALIST · CISCO CCNA',
-  contact: 'CONTACT: AVAILABLE FOR NEW SYSTEMS · LET\'S BUILD',
-}
