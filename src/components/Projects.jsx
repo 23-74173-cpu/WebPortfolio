@@ -8,9 +8,10 @@ import defaultImg from '../assets/project-default.svg'
 
 // TODO: Replace the placeholder SVG illustrations with real screenshots for every project.
 // The SVGs below are stylized mockups, NOT product captures, and must not be presented as such.
-// Projects currently using the generic placeholder: talent-scout, hairconnect, jr-photography,
-// plant-selling, csharp-systems, student-portal. hilom and layrate at least have bespoke
-// illustrations (project-hilom.svg / project-layrate.svg) but are still not real screenshots.
+// Projects currently using the generic branded placeholder (no image asset):
+// talent-scout, hairconnect, jr-photography, plant-selling, csharp-systems, student-portal.
+// hilom and layrate at least have bespoke illustrations (project-hilom.svg / project-layrate.svg)
+// but are still not real screenshots.
 const projectImageMap = {
   hilom: hilomImg,
   layrate: layrateImg,
@@ -197,34 +198,53 @@ function ProjectCard({ project, index }) {
         </div>
 
         <div className="lg:w-72 xl:w-80 shrink-0 flex items-center justify-center">
-          <div
-            className="rounded-lg overflow-hidden border project-card-image-wrapper relative"
-            style={{
-              borderColor: 'var(--bg-card-border)',
-              backgroundColor: 'var(--bg-section-alt)',
-            }}
-          >
-            <img
-              src={imgSrc}
-              alt={isDefaultPlaceholder ? 'Illustration — screenshot coming soon' : `${project.title} illustration`}
-              className="project-card-image w-full h-auto block"
-              loading="lazy"
-              width={800}
-              height={450}
-            />
-            {isDefaultPlaceholder && (
+          {isDefaultPlaceholder ? (
+            <div
+              className="rounded-lg overflow-hidden border w-full aspect-[16/9] flex flex-col items-center justify-center gap-3 px-5 text-center"
+              style={{
+                borderColor: 'var(--bg-card-border)',
+                backgroundColor: 'var(--bg-section-alt)',
+              }}
+            >
               <span
-                className="absolute bottom-2 left-2 text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider"
-                style={{
-                  backgroundColor: 'var(--bg-navbar)',
-                  color: 'var(--text-muted)',
-                  border: '1px solid var(--bg-navbar-border)',
-                }}
+                className="font-display text-lg sm:text-xl leading-tight"
+                style={{ color: 'var(--text-body)' }}
               >
-                Illustration — screenshot coming soon
+                {project.title}
               </span>
-            )}
-          </div>
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {project.stack.slice(0, 4).map((tech, ti) => (
+                  <span
+                    key={tech}
+                    className="text-[11px] font-mono px-2 py-0.5 rounded"
+                    style={{
+                      backgroundColor: techPillColors[ti % techPillColors.length].bg,
+                      color: techPillColors[ti % techPillColors.length].text,
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="rounded-lg overflow-hidden border project-card-image-wrapper"
+              style={{
+                borderColor: 'var(--bg-card-border)',
+                backgroundColor: 'var(--bg-section-alt)',
+              }}
+            >
+              <img
+                src={imgSrc}
+                alt={`${project.title} illustration`}
+                className="project-card-image w-full h-auto block"
+                loading="lazy"
+                width={800}
+                height={450}
+              />
+            </div>
+          )}
         </div>
       </div>
     </article>
