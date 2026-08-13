@@ -6,6 +6,11 @@ import hilomImg from '../assets/project-hilom.svg'
 import layrateImg from '../assets/project-layrate.svg'
 import defaultImg from '../assets/project-default.svg'
 
+// TODO: Replace the placeholder SVG illustrations with real screenshots for every project.
+// The SVGs below are stylized mockups, NOT product captures, and must not be presented as such.
+// Projects currently using the generic placeholder: talent-scout, hairconnect, jr-photography,
+// plant-selling, csharp-systems, student-portal. hilom and layrate at least have bespoke
+// illustrations (project-hilom.svg / project-layrate.svg) but are still not real screenshots.
 const projectImageMap = {
   hilom: hilomImg,
   layrate: layrateImg,
@@ -92,6 +97,7 @@ function ProjectCard({ project, index }) {
   const status = statusConfig[project.status]
   const delay = index * 100
   const imgSrc = projectImageMap[project.id] || defaultImg
+  const isDefaultPlaceholder = imgSrc === defaultImg
 
   return (
     <article
@@ -192,7 +198,7 @@ function ProjectCard({ project, index }) {
 
         <div className="lg:w-72 xl:w-80 shrink-0 flex items-center justify-center">
           <div
-            className="rounded-lg overflow-hidden border project-card-image-wrapper"
+            className="rounded-lg overflow-hidden border project-card-image-wrapper relative"
             style={{
               borderColor: 'var(--bg-card-border)',
               backgroundColor: 'var(--bg-section-alt)',
@@ -200,12 +206,24 @@ function ProjectCard({ project, index }) {
           >
             <img
               src={imgSrc}
-              alt={`${project.title} screenshot`}
+              alt={isDefaultPlaceholder ? 'Illustration — screenshot coming soon' : `${project.title} illustration`}
               className="project-card-image w-full h-auto block"
               loading="lazy"
               width={800}
               height={450}
             />
+            {isDefaultPlaceholder && (
+              <span
+                className="absolute bottom-2 left-2 text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider"
+                style={{
+                  backgroundColor: 'var(--bg-navbar)',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--bg-navbar-border)',
+                }}
+              >
+                Illustration — screenshot coming soon
+              </span>
+            )}
           </div>
         </div>
       </div>
