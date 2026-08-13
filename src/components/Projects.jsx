@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useInView } from '../hooks/useInView'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { projects } from '../data/content'
@@ -42,10 +42,27 @@ const techPillColors = [
 export default function Projects() {
   const [ref, inView] = useInView({ threshold: 0.1 })
   const [filter, setFilter] = useState('all')
+  const [expanded, setExpanded] = useState(false)
+  const restRef = useRef(null)
 
   const filtered = filter === 'all'
     ? projects
     : projects.filter(p => p.status === filter)
+
+  const featured = filtered.filter(p => p.featured)
+  const rest = filtered.filter(p => !p.featured)
+
+  // A filter signals active searching, so auto-expand the collapsed group
+  // whenever one is applied; returning to "All" collapses it again.
+  const showAll = expanded || filter !== 'all'
+
+  const prevExpanded = useRef(showAll)
+  useEffect(() => {
+    if (showAll && !prevExpanded.current) {
+      restRef.current?.focus()
+    }
+    prevExpanded.current = showAll
+  }, [showAll])
 
   return (
     <section
@@ -83,10 +100,51 @@ export default function Projects() {
         </div>
 
         <div className="mt-6 space-y-8">
-          {filtered.map((project, i) => (
+          {featured.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
+
+        {rest.length > 0 && (
+          <>
+            <div
+              id="projects-rest"
+              ref={restRef}
+              tabIndex={-1}
+              className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
+              style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
+            >
+              <div className="overflow-hidden min-h-0">
+                <div className="mt-8 space-y-8">
+                  {rest.map((project, i) => (
+                    <ProjectCard key={project.id} project={project} index={i} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {filter === 'all' && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setExpanded(e => !e)}
+                  aria-expanded={showAll}
+                  aria-controls="projects-rest"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
+                  style={{
+                    borderColor: 'var(--text-muted)',
+                    color: 'var(--text-muted)',
+                  }}
+                >
+                  {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </section>
   )
