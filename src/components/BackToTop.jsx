@@ -1,22 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useScrollY } from '../hooks/useScrollY'
 
 export default function BackToTop() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    let ticking = false
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setVisible(window.scrollY > window.innerHeight * 0.8)
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const scrollY = useScrollY()
+  const visible = scrollY > window.innerHeight * 0.8
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })

@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
 import { personal, stats } from '../data/content'
+import { useScrollY } from '../hooks/useScrollY'
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false)
-  const [pastHero, setPastHero] = useState(false)
+  const scrollY = useScrollY()
+  const pastHero = scrollY > window.innerHeight * 0.85
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true))
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.85)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
