@@ -130,20 +130,30 @@ function ProjectCard({ project, index }) {
       <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
-            <a
-              href={project.link || '#'}
-              target={project.link ? '_blank' : undefined}
-              rel={project.link ? 'noopener noreferrer' : undefined}
-              className="text-lg sm:text-xl font-display transition-colors hover:text-signal"
-              style={{ color: 'var(--text-body)' }}
-            >
-              {project.title}
-              {project.link && (
+            {project.link && project.link !== 'TODO_ADD_LINK' ? (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg sm:text-xl font-display transition-colors hover:text-signal"
+                style={{ color: 'var(--text-body)' }}
+              >
+                {project.title}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline-block ml-1.5 -translate-y-0.5">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
                 </svg>
-              )}
-            </a>
+              </a>
+            ) : (
+              <span
+                className="text-lg sm:text-xl font-display inline-flex items-center gap-2 flex-wrap"
+                style={{ color: 'var(--text-body)' }}
+              >
+                {project.title}
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider bg-[var(--bg-tag-dim)]" style={{ color: 'var(--text-muted)' }}>
+                  Repo coming soon
+                </span>
+              </span>
+            )}
             <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider transition-all motion-safe:duration-150 motion-safe:ease-out ${status.class}
               group-focus-visible:[filter:var(--badge-hover-filter)] group-focus-visible:shadow-sm group-focus-visible:shadow-current/20`}>
               {status.label}

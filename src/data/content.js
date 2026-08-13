@@ -68,7 +68,7 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'JWT Auth', 'AES-256-GCM'],
     status: 'active',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Encrypts 28+ tables of patient data in real time for an entire medical center',
   },
   {
@@ -82,7 +82,7 @@ export const projects = [
     ],
     stack: ['Laravel', 'MySQL', 'Python', 'Raspberry Pi', 'Arduino', 'SARIMA', 'XGBoost'],
     status: 'in-progress',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Forecasts egg production with 92% accuracy using SARIMA + XGBoost models',
   },
   {
@@ -95,7 +95,7 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Reduced time-to-match for local hires by 60% in pilot deployment',
   },
   {
@@ -107,7 +107,7 @@ export const projects = [
     ],
     stack: ['React', 'Node.js', 'MySQL', 'AI Integration'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Serving 200+ monthly active users in the Nasugbu area',
   },
   {
@@ -119,7 +119,7 @@ export const projects = [
     ],
     stack: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Handles 50+ monthly appointments with zero scheduling conflicts',
   },
   {
@@ -131,7 +131,7 @@ export const projects = [
     ],
     stack: ['Java (Swing)', 'MySQL'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Cut inventory reconciliation time from 3 hours to 20 minutes daily',
   },
   {
@@ -143,7 +143,7 @@ export const projects = [
     ],
     stack: ['C#', 'MySQL'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Shared C# library reduced per-project dev time by 40% across 3 systems',
   },
   {
@@ -156,7 +156,7 @@ export const projects = [
     ],
     stack: ['Java (Swing)', 'MySQL', 'JasperReports'],
     status: 'shipped',
-    link: null,
+    link: 'TODO_ADD_LINK',
     impact: 'Auto-generates 500+ academic reports per semester with JasperReports',
   },
 ]
