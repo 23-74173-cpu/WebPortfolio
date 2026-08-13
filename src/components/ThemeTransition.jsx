@@ -2,18 +2,51 @@ import { useState, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ThemeContext } from '../context/ThemeContext'
 
+function isDarkByTime(date) {
+  const hour = date.getHours()
+  return hour < 6 || hour >= 18
+}
+
+function nextBoundaryMs(date) {
+  const next = new Date(date)
+  next.setSeconds(0, 0)
+  if (isDarkByTime(date)) {
+    next.setHours(6, 0, 0, 0)
+  } else {
+    next.setHours(18, 0, 0, 0)
+  }
+  if (next <= date) next.setDate(next.getDate() + 1)
+  return next.getTime() - date.getTime()
+}
+
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('theme')
     if (saved) return saved === 'dark'
-    const hour = new Date().getHours()
-    return hour < 6 || hour >= 18
+    return isDarkByTime(new Date())
   })
   const [overlay, setOverlay] = useState(null)
   const [transitioning, setTransitioning] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    let timer = 0
+    const applyAuto = () => {
+      if (localStorage.getItem('theme')) return
+      const nextDark = isDarkByTime(new Date())
+      setDark(nextDark)
+      document.documentElement.classList.toggle('light', !nextDark)
+      schedule()
+    }
+    const schedule = () => {
+      clearTimeout(timer)
+      timer = setTimeout(applyAuto, nextBoundaryMs(new Date()) + 1000)
+    }
+    schedule()
+    return () => clearTimeout(timer)
   }, [])
 
   const toggleTheme = useCallback(() => {
