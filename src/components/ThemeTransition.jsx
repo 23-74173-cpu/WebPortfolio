@@ -3,9 +3,12 @@ import { createPortal } from 'react-dom'
 import { ThemeContext } from '../context/ThemeContext'
 
 export function ThemeProvider({ children }) {
-  const [dark, setDark] = useState(
-    () => localStorage.getItem('theme') !== 'light'
-  )
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem('theme')
+    if (saved) return saved === 'dark'
+    const hour = new Date().getHours()
+    return hour < 6 || hour >= 18
+  })
   const [overlay, setOverlay] = useState(null)
   const [transitioning, setTransitioning] = useState(false)
 

@@ -31,9 +31,13 @@
       rel="stylesheet"
     />
     <script>
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.classList.add('light')
-      }
+      ;(() => {
+        const saved = localStorage.getItem('theme')
+        const hour = new Date().getHours()
+        const isDay = hour >= 6 && hour < 18
+        const shouldBeLight = saved === 'light' || (saved === null && isDay)
+        if (shouldBeLight) document.documentElement.classList.add('light')
+      })()
     </script>
   </head>
   <body>
