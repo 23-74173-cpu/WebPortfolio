@@ -33,7 +33,7 @@ npm run lint       # ESLint check
 
 ## Live Demo
 
-Deployed at: [https://myportfolio.vercel.app](https://myportfolio.vercel.app)
+Deployed at: [https://joed-portfolio.vercel.app](https://joed-portfolio.vercel.app)
 
 ## Project Structure
 
