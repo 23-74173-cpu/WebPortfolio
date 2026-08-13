@@ -223,6 +223,28 @@
   100% { transform: translateY(-4px); }
 }
 
+/* Mobile GPUs have the least headroom for large blur + animation. Keep the
+   orbs visible but with a much smaller blur radius and drop the cheapest
+   decorative layers entirely on small screens. */
+@media (max-width: 640px) {
+  .hero-orb {
+    filter: blur(30px);
+  }
+
+  .bg-mesh-orb {
+    filter: blur(35px);
+  }
+
+  .bg-scan-line {
+    display: none;
+  }
+
+  .bg-dot-grid {
+    animation: none;
+    opacity: 0.015;
+  }
+}
+
 .bg-layer {
   position: fixed;
   inset: 0;
