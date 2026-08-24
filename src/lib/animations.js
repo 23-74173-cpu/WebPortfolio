@@ -74,6 +74,29 @@ export function initAnimations() {
     // ---- Decorative animations (skipped entirely under reduced motion) ----
     if (prefersReducedMotion()) return
 
+    // Section sweep divider: a one-shot signal-blue beam that sweeps across a
+    // section boundary the first time the section is entered. Driven by the
+    // onEnter of the existing reveal ScrollTriggers below (no standalone
+    // triggers) and fires exactly once per section.
+    const attachSweep = (section, triggerVars) => {
+      if (!section) return triggerVars
+      let beam = section.querySelector('.sweep-divider')
+      if (!beam) {
+        beam = document.createElement('span')
+        beam.className = 'sweep-divider'
+        beam.setAttribute('aria-hidden', 'true')
+        section.appendChild(beam)
+      }
+      const play = () => {
+        if (beam.dataset.played === 'true') return
+        beam.dataset.played = 'true'
+        gsap.timeline({ defaults: { overwrite: 'auto' } })
+          .to(beam, { scaleX: 1, opacity: 0.8, duration: 0.5, ease: 'power2.out' })
+          .to(beam, { opacity: 0, duration: 0.5, ease: 'power1.out', clearProps: 'transform,opacity' })
+      }
+      return { ...triggerVars, onEnter: () => play() }
+    }
+
     // Hero stat counters: count up on load, staggered. The visible number is an
     // absolute overlay above an invisible anchor of the target value so text
     // width never changes mid-count (no layout shift / CLS).
@@ -105,7 +128,7 @@ export function initAnimations() {
         duration: 0.7,
         ease: 'power2.out',
         stagger: 0.12,
-        scrollTrigger: { trigger: section, start: 'top 82%', once: true },
+        scrollTrigger: attachSweep(section, { trigger: section, start: 'top 82%', once: true }),
       })
     }
     revealSection('#about')
@@ -116,7 +139,7 @@ export function initAnimations() {
     if (skills) {
       const q = gsap.utils.selector(skills)
       const contents = q('.skill-card-content')
-      const tl = gsap.timeline({ scrollTrigger: { trigger: skills, start: 'top 78%', once: true } })
+      const tl = gsap.timeline({ scrollTrigger: attachSweep(skills, { trigger: skills, start: 'top 78%', once: true }) })
       tl.from(q('.section-label, .section-heading'), {
         opacity: 0,
         y: 20,
@@ -145,7 +168,7 @@ export function initAnimations() {
         duration: 0.7,
         stagger: 0.15,
         ease: 'power2.out',
-        scrollTrigger: { trigger: projects, start: 'top 78%', once: true },
+        scrollTrigger: attachSweep(projects, { trigger: projects, start: 'top 78%', once: true }),
       })
     }
 
@@ -159,7 +182,7 @@ export function initAnimations() {
         duration: 0.7,
         ease: 'power2.out',
         stagger: 0.12,
-        scrollTrigger: { trigger: timeline, start: 'top 82%', once: true },
+        scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }),
       })
       const wrap = timeline.querySelector('.timeline-scrub')
       const line = timeline.querySelector('.timeline-line')
@@ -180,7 +203,7 @@ export function initAnimations() {
     const certs = document.querySelector('#certifications')
     if (certs) {
       const q = gsap.utils.selector(certs)
-      const tl = gsap.timeline({ scrollTrigger: { trigger: certs, start: 'top 80%', once: true } })
+      const tl = gsap.timeline({ scrollTrigger: attachSweep(certs, { trigger: certs, start: 'top 80%', once: true }) })
       tl.from(q('.section-label, .section-heading'), {
         opacity: 0,
         y: 20,
