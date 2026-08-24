@@ -236,7 +236,7 @@ function ProjectCard({ project, index }) {
           </ul>
 
           <p className="mt-3 text-xs font-mono text-dim">
-            Impact: <span className="text-signal italic">{project.impact || 'Placeholder — actual metrics coming soon'}</span>
+            Impact: <span className="text-signal-light italic">{project.impact || 'Placeholder — actual metrics coming soon'}</span>
           </p>
 
           <div className="mt-4 flex flex-wrap gap-1.5">
