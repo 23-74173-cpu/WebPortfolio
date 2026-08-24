@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { personal } from '../data/content'
 import { useTheme } from '../hooks/useTheme'
+import { usePalette } from './paletteContext'
 
 const links = [
   { label: 'About', href: '#about' },
@@ -22,6 +23,7 @@ function scrollToSection(id) {
 
 export default function Navbar() {
   const { toggleTheme, dark } = useTheme()
+  const { openPalette } = usePalette()
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -103,6 +105,19 @@ export default function Navbar() {
             backdropFilter: 'blur(12px)',
           }}
         >
+          <li className="md:hidden">
+            <button
+              onClick={() => { setOpen(false); openPalette() }}
+              className="relative block py-2 w-full text-left group rounded"
+              aria-label="Open command palette"
+            >
+              <span className="text-base font-mono flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
+                <kbd className="text-[0.7rem] text-signal">⌘K</kbd>
+                Command palette
+              </span>
+              <span className="absolute left-0 bottom-0 h-[2px] bg-signal transition-[width] duration-150 ease-in-out w-0 group-hover:w-full" />
+            </button>
+          </li>
           {links.map((link) => {
             const id = link.href.slice(1)
             const isActive = activeSection === id
@@ -126,6 +141,17 @@ export default function Navbar() {
               </li>
             )
           })}
+          <li className="hidden md:block md:self-center">
+            <button
+              type="button"
+              onClick={openPalette}
+              className="navbar-cmdk"
+              aria-label="Open command palette"
+            >
+              <span>Jump</span>
+              <kbd className="navbar-cmdk-kbd">⌘K</kbd>
+            </button>
+          </li>
         </ul>
       </div>
     </nav>

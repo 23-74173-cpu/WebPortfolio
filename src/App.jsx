@@ -12,7 +12,7 @@ import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
 import BackgroundLayer from './components/BackgroundLayer'
 import Cursor from './components/Cursor'
-import PaletteTrigger from './components/PaletteTrigger'
+import { PaletteProvider } from './components/PaletteManager'
 import { ThemeProvider } from './components/ThemeTransition'
 
 export default function App() {
@@ -51,24 +51,30 @@ export default function App() {
     )
   }, [])
 
+  // Page is interactive: let the boot loader (if shown) fade out.
+  useEffect(() => {
+    window.__appReady?.()
+  }, [])
+
   return (
     <ThemeProvider>
-      <ScrollProgress />
-      <BackgroundLayer />
-      <Cursor />
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Timeline />
-        <Certifications />
-        <Contact />
-      </main>
-      <Footer />
-      <BackToTop />
-      <PaletteTrigger />
+      <PaletteProvider>
+        <ScrollProgress />
+        <BackgroundLayer />
+        <Cursor />
+        <Navbar />
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Timeline />
+          <Certifications />
+          <Contact />
+        </main>
+        <Footer />
+        <BackToTop />
+      </PaletteProvider>
     </ThemeProvider>
   )
 }

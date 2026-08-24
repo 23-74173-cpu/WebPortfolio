@@ -117,36 +117,67 @@ export function initAnimations() {
     if (systemsEl) counter(systemsEl, 0)
     if (clientsEl) counter(clientsEl, 0.15)
 
-    // Section reveals (label + heading + [data-reveal] content), one-time.
-    const revealSection = (id) => {
+    // Section reveals. Each section gets a distinct, one-shot entrance so
+    // arrivals feel considered rather than uniform. All inside the existing
+    // reveal ScrollTriggers (no standalone instances), same easing family
+    // (power2.out), durations within 0.4-0.7s.
+    const revealSection = (id, { y = 20, duration = 0.7, stagger = 0.12 } = {}) => {
       const section = document.querySelector(id)
       if (!section) return
       const q = gsap.utils.selector(section)
       gsap.from(q('.section-label, .section-heading, [data-reveal]'), {
         opacity: 0,
-        y: 20,
-        duration: 0.7,
+        y,
+        duration,
         ease: 'power2.out',
-        stagger: 0.12,
+        stagger,
         scrollTrigger: attachSweep(section, { trigger: section, start: 'top 82%', once: true }),
       })
     }
-    revealSection('#about')
-    revealSection('#contact')
 
-    // Skills: heading, then each group's pills cascade in.
+    // About: fade + translateY like before, but with a top-edge glow fading in
+    // just ahead of the content, reading as "arriving from above the fold".
+    const about = document.querySelector('#about')
+    if (about) {
+      const qAbout = gsap.utils.selector(about)
+      let topGlow = about.querySelector('.about-top-glow')
+      if (!topGlow) {
+        topGlow = document.createElement('span')
+        topGlow.className = 'about-top-glow'
+        topGlow.setAttribute('aria-hidden', 'true')
+        about.appendChild(topGlow)
+      }
+      const tl = gsap.timeline({ scrollTrigger: attachSweep(about, { trigger: about, start: 'top 82%', once: true }) })
+      tl.fromTo(topGlow, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0)
+        .from(qAbout('.section-label, .section-heading, [data-reveal]'), {
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          ease: 'power2.out',
+          stagger: 0.1,
+        }, 0.05)
+    }
+
+    // Contact: fade + translateY from above (negative), settling downward, to
+    // close the page rather than repeat About's upward arrival.
+    revealSection('#contact', { y: -20, duration: 0.6, stagger: 0.12 })
+
+    // Skills: heading, then each group's pills cascade in — plus the section
+    // container settling scaleY(0.98 -> 1) so the whole panel arrives as the
+    // pills cascade.
     const skills = document.querySelector('#skills')
     if (skills) {
       const q = gsap.utils.selector(skills)
       const contents = q('.skill-card-content')
       const tl = gsap.timeline({ scrollTrigger: attachSweep(skills, { trigger: skills, start: 'top 78%', once: true }) })
+      tl.from(skills, { scaleY: 0.98, transformOrigin: 'top center', duration: 0.7, ease: 'power2.out' }, 0)
       tl.from(q('.section-label, .section-heading'), {
         opacity: 0,
         y: 20,
         duration: 0.6,
         ease: 'power2.out',
         stagger: 0.1,
-      })
+      }, 0.1)
       contents.forEach((content, i) => {
         tl.from(content, { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out' }, 0.2 + i * 0.12)
         tl.from(content.querySelectorAll('.skill-pill'), {
@@ -159,14 +190,15 @@ export function initAnimations() {
       })
     }
 
-    // Projects: stagger the featured card content in.
+    // Projects: the visual centerpiece — cards enter with a slightly larger
+    // translate and a more deliberate stagger than other sections.
     const projects = document.querySelector('#projects')
     if (projects) {
       gsap.from('.project-card-content', {
         opacity: 0,
-        y: 24,
+        y: 36,
         duration: 0.7,
-        stagger: 0.15,
+        stagger: 0.18,
         ease: 'power2.out',
         scrollTrigger: attachSweep(projects, { trigger: projects, start: 'top 78%', once: true }),
       })
@@ -199,7 +231,8 @@ export function initAnimations() {
       }
     }
 
-    // Certifications: heading + 2-card stagger.
+    // Certifications: mirror Projects' card entrance but lighter — shorter
+    // distance and stagger, reading as a smaller version of the same scheme.
     const certs = document.querySelector('#certifications')
     if (certs) {
       const q = gsap.utils.selector(certs)
@@ -212,11 +245,11 @@ export function initAnimations() {
         stagger: 0.1,
       }).from(q('.cert-card-content'), {
         opacity: 0,
-        y: 20,
-        duration: 0.6,
-        stagger: 0.15,
+        y: 16,
+        duration: 0.55,
+        stagger: 0.1,
         ease: 'power2.out',
-      }, '-=0.35')
+      }, '-=0.3')
     }
   }, document.body)
 

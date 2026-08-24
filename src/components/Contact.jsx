@@ -9,6 +9,7 @@ const socialLinks = [
 
 export default function Contact() {
   const [copied, setCopied] = useState(false)
+  const [resumeState, setResumeState] = useState('idle') // 'idle' | 'saving' | 'done'
 
   const handleCopyEmail = useCallback(() => {
     navigator.clipboard.writeText(personal.email).then(() => {
@@ -16,6 +17,23 @@ export default function Contact() {
       setTimeout(() => setCopied(false), 1500)
     }).catch(() => {})
   }, [])
+
+  const downloadResume = () => {
+    const a = document.createElement('a')
+    a.href = personal.resumeUrl
+    a.download = personal.resumeUrl.split('/').pop() || 'resume.pdf'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+  }
+
+  const handleResume = () => {
+    if (resumeState !== 'idle') return
+    setResumeState('saving')
+    downloadResume()
+    setTimeout(() => setResumeState('done'), 600)
+    setTimeout(() => setResumeState('idle'), 2600)
+  }
 
   return (
     <section
@@ -124,17 +142,24 @@ export default function Contact() {
             </div>
 
             <div className="mt-8">
-              <a
+              <button
                 id="download-resume-btn"
-                href={personal.resumeUrl}
-                download
+                type="button"
+                onClick={handleResume}
+                aria-label="Download resume"
                 className="inline-flex items-center gap-2 px-5 py-2.5 border border-[var(--text-muted)] text-[var(--text-muted)] text-sm font-medium rounded hover:bg-signal hover:text-paper hover:border-signal transition-colors font-body"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                </svg>
-                Download Resume
-              </a>
+                {resumeState === 'idle' ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                    </svg>
+                    Download Résumé
+                  </>
+                ) : (
+                  <>{resumeState === 'saving' ? 'Preparing…' : '✓ Saved'}</>
+                )}
+              </button>
             </div>
           </div>
         </div>

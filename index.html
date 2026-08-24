@@ -48,6 +48,76 @@
         if (shouldBeLight) document.documentElement.classList.add('light')
       })()
     </script>
+    <script>
+      // Boot loader: only shows when the page isn't interactive yet after a
+      // short threshold (slow connections). Self-contained inline styles so it
+      // works before CSS/JS arrive; exposes window.__appReady for React to fade
+      // it out (with window 'load' as a fallback). Zero layout shift on removal
+      // (fixed, pointer-events:none). Static indicator under reduced motion.
+      ;(() => {
+        var ready = false
+        var appended = false
+        var overlay = document.createElement('div')
+        overlay.id = 'boot-loader'
+        overlay.setAttribute('aria-hidden', 'true')
+        overlay.style.cssText =
+          'position:fixed;inset:0;z-index:9998;background:#0A0F1A;flex-direction:column;align-items:center;justify-content:center;gap:14px;display:flex;opacity:1;transition:opacity 300ms ease;pointer-events:none;'
+
+        function buildIndicator() {
+          var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          var label = document.createElement('p')
+          label.textContent = 'LOADING\u2026'
+          label.style.cssText =
+            "font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#5A9DEF;margin:0;"
+          if (reduce) {
+            var bar = document.createElement('span')
+            bar.style.cssText = 'width:40px;height:2px;background:#2A7DE1;'
+            overlay.appendChild(bar)
+          } else {
+            var style = document.createElement('style')
+            style.textContent =
+              '@keyframes bootDots{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}'
+            var dots = document.createElement('span')
+            dots.style.cssText = 'display:flex;gap:6px;'
+            ;[0, 1, 2].forEach(function (i) {
+              var d = document.createElement('span')
+              d.style.cssText =
+                'width:6px;height:6px;border-radius:50%;background:#5A9DEF;animation:bootDots 900ms ease-in-out ' + (i * 120) + 'ms infinite;'
+              dots.appendChild(d)
+            })
+            document.head.appendChild(style)
+            overlay.appendChild(dots)
+          }
+          overlay.appendChild(label)
+        }
+        buildIndicator()
+
+        function hide() {
+          if (!overlay.parentNode) return
+          overlay.style.opacity = '0'
+          window.setTimeout(function () {
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay)
+          }, 350)
+        }
+
+        function onReady() {
+          ready = true
+          if (appended) hide()
+        }
+        window.__appReady = onReady
+        window.addEventListener('load', onReady, { once: true })
+
+        var conn = (navigator.connection && navigator.connection.effectiveType) || null
+        var slow = conn === 'slow-2g' || conn === '2g' || conn === '3g'
+        var delay = conn === null ? 500 : slow ? 300 : 650
+
+        window.setTimeout(function () {
+          if (ready) return
+          appended = true
+          document.body.appendChild(overlay)
+        }, delay)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

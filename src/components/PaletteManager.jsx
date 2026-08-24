@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { PaletteContext } from './paletteContext'
 
-// Opens the Cmd/Ctrl+K command palette. cmdk itself lives in a dynamically
-// imported chunk (src/components/CommandPalette.jsx) so it never touches the
-// critical-path bundle. Also exposes the floating "⌘K" pill for touch users.
-export default function PaletteTrigger() {
+// Owns palette open state + global shortcuts. cmdk is dynamically imported on
+// first open (async chunk), with an inline "Loading commands…" state shown
+// scoped to the dialog while the chunk loads. Triggers come from the navbar
+// (⌘K badge on desktop, a menu item in the mobile menu) — there is no floating
+// pill anymore.
+export function PaletteProvider({ children }) {
   const [open, setOpen] = useState(false)
   const [Palette, setPalette] = useState(null)
-  const pillRef = useRef(null)
   const priorFocusRef = useRef(null)
 
   const openPalette = useCallback(() => {
     priorFocusRef.current = document.activeElement
+    setOpen(true)
     if (!Palette) {
-      import('./CommandPalette').then((m) => {
-        setPalette(() => m.default)
-        setOpen(true)
-      })
-    } else {
-      setOpen(true)
+      import('./CommandPalette').then((m) => setPalette(() => m.default))
     }
   }, [Palette])
 
@@ -26,7 +24,6 @@ export default function PaletteTrigger() {
     requestAnimationFrame(() => {
       const target = priorFocusRef.current
       if (target && typeof target.focus === 'function') target.focus()
-      else pillRef.current?.focus()
     })
   }, [])
 
@@ -49,20 +46,22 @@ export default function PaletteTrigger() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open, openPalette, closePalette])
 
+  const dialog = open
+    ? Palette
+      ? <Palette onClose={closePalette} />
+      : (
+          <div className="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
+            <div className="palette-panel palette-panel--loading">
+              <p className="palette-loading-text">Loading commands…</p>
+            </div>
+          </div>
+        )
+    : null
+
   return (
-    <>
-      <button
-        ref={pillRef}
-        type="button"
-        onClick={() => (open ? closePalette() : openPalette())}
-        aria-label="Open command palette"
-        aria-expanded={open}
-        aria-controls="command-palette-dialog"
-        className="palette-pill"
-      >
-        <kbd className="palette-pill-kbd">⌘K</kbd>
-      </button>
-      {open && Palette && <Palette onClose={closePalette} />}
-    </>
+    <PaletteContext.Provider value={{ open, openPalette }}>
+      {children}
+      {dialog}
+    </PaletteContext.Provider>
   )
 }
