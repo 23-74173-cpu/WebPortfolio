@@ -169,6 +169,91 @@
   filter: invert(1);
 }
 
+/* ---- Custom cursor + sitewide cursor glow ----
+   Rendered by <Cursor/> on fine-pointer devices only (and only when the user
+   does not prefer reduced motion); the component toggles `html.custom-cursor`
+   to hide the native cursor. Only transform/opacity/scale are animated. */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 120ms ease;
+}
+
+.cursor-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: var(--accent);
+  transition: transform 180ms ease;
+}
+
+.cursor-dot--active::after {
+  transform: scale(2.2);
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 120ms ease;
+}
+
+.cursor-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.cursor-ring--active::after {
+  transform: scale(1.45);
+  border-color: var(--accent);
+}
+
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-color), transparent 68%);
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 300ms ease;
+}
+
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring,
+  .cursor-glow {
+    display: none;
+  }
+}
+
 /* Featured project-card entrance + hover. Hover is gated to no-preference so
    reduced-motion users get a static card (transform/shadow/border changes are
    also reset in the reduce block below). */
@@ -420,5 +505,10 @@ main > section:first-child::before {
   main > section::before { animation: none !important; opacity: 0.08; }
   .project-card:hover { transform: none !important; box-shadow: none !important; }
   .project-card { transition: none; }
+  .cursor-dot,
+  .cursor-ring,
+  .cursor-glow {
+    display: none;
+  }
   .project-card-image { transition: none; }
 }

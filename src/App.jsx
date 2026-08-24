@@ -11,6 +11,7 @@ import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
 import BackgroundLayer from './components/BackgroundLayer'
+import Cursor from './components/Cursor'
 import { ThemeProvider } from './components/ThemeTransition'
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
     <ThemeProvider>
       <ScrollProgress />
       <BackgroundLayer />
+      <Cursor />
       <Navbar />
       <main>
         <Hero />
