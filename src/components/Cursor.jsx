@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '../lib/motion'
 
 // Elements that should make the cursor ring indicate interactivity.
-const INTERACTIVE = 'a, button, [role="button"], input, select, textarea, summary, label, [tabindex]'
+const INTERACTIVE = 'a, button, [role="button"], [role="option"], input, select, textarea, summary, label, [tabindex]'
 
 const DOT_OFF = 3   // 6px dot, centered offset
 const RING_OFF = 15 // 30px ring, centered offset
