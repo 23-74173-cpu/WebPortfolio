@@ -83,7 +83,7 @@ export default function Projects() {
               onClick={() => setFilter(opt.value)}
               className="text-xs font-mono px-3 py-1.5 rounded-full transition-all duration-150"
               style={{
-                backgroundColor: filter === opt.value ? 'var(--accent)' : 'var(--bg-tag)',
+                backgroundColor: filter === opt.value ? 'var(--signal-dark)' : 'var(--bg-tag)',
                 color: filter === opt.value ? '#fff' : 'var(--text-muted)',
               }}
             >
