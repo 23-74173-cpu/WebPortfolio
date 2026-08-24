@@ -89,14 +89,29 @@ export default function Cursor() {
 
       const idleTick = () => {
         const t = performance.now() - idleStart
-        // Ring settle: a soft under/overshoot dip that eases back to 1 over ~0.7s.
+        const ts = t / 1000
+        // Ring settle: a clear under/overshoot dip that snaps back over ~0.7s.
         const p = Math.min(1, t / 700)
-        const settle = 1 - 0.10 * Math.sin(Math.PI * p) * Math.pow(1 - p, 1.3)
-        // Glow breathe: subtle 5s sine once the settle has finished.
-        const breathe = 0.75 + 0.15 * Math.sin((t / 1000) * Math.PI * 2 / 5)
-        glow.style.opacity = (t >= 750 ? breathe : 1).toFixed(3)
-        const base = `translate3d(${(rx - RING_OFF).toFixed(1)}px, ${(ry - RING_OFF).toFixed(1)}px, 0)`
-        ring.style.transform = `${base} scale(${settle.toFixed(3)})`
+        const settle = 1 - 0.28 * Math.sin(Math.PI * p) * Math.pow(1 - p, 1.3)
+        // Breathe: slower 3s wave so the pulse is easy to read.
+        const angle = (ts / 3) * Math.PI * 2
+        // Glow throb: opacity swings 0.55 -> 1 while the glow also scales 0.94 -> 1.06.
+        const glowOpacity = 0.775 + 0.225 * Math.sin(angle)
+        const glowScale = 1 + 0.06 * Math.sin(angle)
+        // Ring breathes in counter-phase so the two never peak together.
+        const ringBreathe = 1 + 0.05 * Math.sin(angle + Math.PI)
+
+        const glowBase = `translate3d(${(gx - GLOW_OFF).toFixed(1)}px, ${(gy - GLOW_OFF).toFixed(1)}px, 0)`
+        const ringBase = `translate3d(${(rx - RING_OFF).toFixed(1)}px, ${(ry - RING_OFF).toFixed(1)}px, 0)`
+        if (t >= 750) {
+          glow.style.opacity = glowOpacity.toFixed(3)
+          glow.style.transform = `${glowBase} scale(${glowScale.toFixed(3)})`
+          ring.style.transform = `${ringBase} scale(${ringBreathe.toFixed(3)})`
+        } else {
+          glow.style.opacity = '1'
+          glow.style.transform = glowBase
+          ring.style.transform = `${ringBase} scale(${settle.toFixed(3)})`
+        }
         idleRaf = requestAnimationFrame(idleTick)
       }
       idleRaf = requestAnimationFrame(idleTick)
