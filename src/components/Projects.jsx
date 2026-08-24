@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useMouseGlow } from '../hooks/useMouseGlow'
+import { useTheme } from '../hooks/useTheme'
 import { projects } from '../data/content'
 import hilomImg from '../assets/project-hilom.svg'
 import layrateImg from '../assets/project-layrate.svg'
@@ -17,9 +18,18 @@ const projectImageMap = {
 }
 
 const statusConfig = {
-  'active': { label: 'Active Development', class: 'bg-signal/15 text-signal' },
-  'in-progress': { label: 'In Progress', class: 'bg-safety/15 text-safety' },
-  'shipped': { label: 'Shipped', class: 'bg-emerald-500/15 text-emerald-400' },
+  'active': {
+    label: 'Active Development',
+    classes: { dark: 'bg-signal/15 text-signal-light', light: 'bg-signal/15 text-signal-dark' },
+  },
+  'in-progress': {
+    label: 'In Progress',
+    classes: { dark: 'bg-safety/15 text-safety-light', light: 'bg-safety/15 text-[#B23D2A]' },
+  },
+  'shipped': {
+    label: 'Shipped',
+    classes: { dark: 'bg-emerald-500/15 text-emerald-400', light: 'bg-emerald-500/15 text-emerald-700' },
+  },
 }
 
 const filterOptions = [
@@ -30,12 +40,12 @@ const filterOptions = [
 ]
 
 const techPillColors = [
-  { bg: 'rgba(42,125,225,0.12)', text: '#5A9DEF' },
-  { bg: 'rgba(56,189,248,0.12)', text: '#38BDF8' },
-  { bg: 'rgba(16,185,129,0.12)', text: '#34D399' },
-  { bg: 'rgba(139,92,246,0.12)', text: '#A78BFA' },
-  { bg: 'rgba(251,146,60,0.12)', text: '#FB923C' },
-  { bg: 'rgba(236,72,153,0.12)', text: '#F472B6' },
+  { bg: 'rgba(42,125,225,0.12)', text: '#5A9DEF', light: '#1E5FA8' },
+  { bg: 'rgba(56,189,248,0.12)', text: '#38BDF8', light: '#0369A1' },
+  { bg: 'rgba(16,185,129,0.12)', text: '#34D399', light: '#047857' },
+  { bg: 'rgba(139,92,246,0.12)', text: '#A78BFA', light: '#6D28D9' },
+  { bg: 'rgba(251,146,60,0.12)', text: '#FB923C', light: '#C2410C' },
+  { bg: 'rgba(236,72,153,0.12)', text: '#F472B6', light: '#BE185D' },
 ]
 
 export default function Projects() {
@@ -145,18 +155,20 @@ export default function Projects() {
 
 function ProjectCard({ project }) {
   const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
+  const { dark } = useTheme()
   const status = statusConfig[project.status]
+  const statusClass = status.classes[dark ? 'dark' : 'light']
   const imgSrc = projectImageMap[project.id] || defaultImg
   const isDefaultPlaceholder = imgSrc === defaultImg
 
   return (
     <article
-      ref={glowRef}
+      ref={(el) => {
+        glowRef.current = el
+      }}
       {...glowHandlers}
       className={`project-card ${project.featured ? 'project-card--featured' : ''} ${
-        project.status === 'in-progress'
-          ? 'project-card--in-progress'
-          : ''
+        project.status === 'in-progress' ? 'project-card--in-progress' : ''
       } relative overflow-hidden rounded-lg p-6 sm:p-8 group ${
         project.status === 'in-progress'
           ? 'border-l-safety'
@@ -206,7 +218,7 @@ function ProjectCard({ project }) {
                 </span>
               </span>
             )}
-            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider transition-all motion-safe:duration-150 motion-safe:ease-out ${status.class}
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider transition-all motion-safe:duration-150 motion-safe:ease-out ${statusClass}
               group-focus-visible:[filter:var(--badge-hover-filter)] group-focus-visible:shadow-sm group-focus-visible:shadow-current/20`}>
               {status.label}
             </span>
@@ -223,7 +235,7 @@ function ProjectCard({ project }) {
           </ul>
 
           <p className="mt-3 text-xs font-mono text-dim">
-            Impact: <span className="text-signal-light italic">{project.impact || 'Placeholder — actual metrics coming soon'}</span>
+            Impact: <span className={`italic ${dark ? 'text-signal-light' : 'text-signal-dark'}`}>{project.impact || 'Placeholder — actual metrics coming soon'}</span>
           </p>
 
           <div className="mt-4 flex flex-wrap gap-1.5">
@@ -233,7 +245,7 @@ function ProjectCard({ project }) {
                 className="text-[11px] font-mono px-2 py-0.5 rounded transition-colors duration-150"
                 style={{
                   backgroundColor: techPillColors[ti % techPillColors.length].bg,
-                  color: techPillColors[ti % techPillColors.length].text,
+                  color: techPillColors[ti % techPillColors.length][dark ? 'text' : 'light'],
                 }}
               >
                 {tech}
@@ -264,7 +276,7 @@ function ProjectCard({ project }) {
                     className="text-[11px] font-mono px-2 py-0.5 rounded"
                     style={{
                       backgroundColor: techPillColors[ti % techPillColors.length].bg,
-                      color: techPillColors[ti % techPillColors.length].text,
+                      color: techPillColors[ti % techPillColors.length][dark ? 'text' : 'light'],
                     }}
                   >
                     {tech}

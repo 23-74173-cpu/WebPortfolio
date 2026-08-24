@@ -1,8 +1,8 @@
 import { useMouseGlow } from '../hooks/useMouseGlow'
+import { useTheme } from '../hooks/useTheme'
 import { timeline } from '../data/content'
 
 export default function Timeline() {
-
   return (
     <section
       id="experience"
@@ -31,6 +31,7 @@ export default function Timeline() {
 
 function TimelineItem({ item }) {
   const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
+  const { dark } = useTheme()
 
   return (
     <div className="relative pl-10">
@@ -68,7 +69,7 @@ function TimelineItem({ item }) {
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span
               className="font-mono text-[11px] tracking-wider"
-              style={{ color: 'var(--accent)' }}
+              style={{ color: dark ? 'var(--signal-light)' : 'var(--signal-dark)' }}
             >
               {item.year}
             </span>
