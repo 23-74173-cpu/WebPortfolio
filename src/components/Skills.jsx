@@ -1,4 +1,3 @@
-import { useInView } from '../hooks/useInView'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { skillGroups } from '../data/content'
 
@@ -27,18 +26,12 @@ function getPillColor(groupName, skillName) {
 }
 
 export default function Skills() {
-  const [ref, inView] = useInView({ threshold: 0.1 })
 
   return (
     <section
       id="skills"
-      ref={ref}
-      className="py-28 sm:py-36 px-5 transition-all duration-500 ease-out"
-      style={{
-        backgroundColor: 'var(--bg-section-alt)',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(30px)',
-      }}
+      className="py-28 sm:py-36 px-5"
+      style={{ backgroundColor: 'var(--bg-section-alt)' }}
     >
       <div className="max-w-6xl mx-auto">
         <span className="section-label">Skills &amp; Stack</span>
@@ -63,7 +56,7 @@ function SkillCard({ group }) {
     <div
       ref={glowRef}
       {...glowHandlers}
-      className="relative overflow-hidden card-bg rounded-lg p-5 transition-all duration-150 cursor-default hover:scale-[1.02] hover:shadow-lg hover:shadow-signal/5"
+      className="relative overflow-hidden card-bg rounded-lg p-5 transition-all duration-150 cursor-default hover:scale-[1.02] hover:shadow-lg hover:shadow-signal/5 skill-card"
       style={{
         borderWidth: '1px',
         borderStyle: 'solid',
@@ -76,7 +69,7 @@ function SkillCard({ group }) {
           background: `radial-gradient(var(--glow-radius) circle at ${glowPos.x}% ${glowPos.y}%, var(--glow-color), transparent 40%)`,
         }}
       />
-      <div className="relative z-[1]">
+      <div className="relative z-[1] skill-card-content">
         <h3 className="text-xs font-mono tracking-wider uppercase mb-3" style={{ color: 'var(--text-body)' }}>
           {group.name}
         </h3>
@@ -84,7 +77,7 @@ function SkillCard({ group }) {
           {group.skills.map((skill) => (
             <span
               key={skill}
-              className="font-mono rounded transition-colors duration-150"
+              className="font-mono rounded transition-colors duration-150 skill-pill"
               style={getPillColor(group.name, skill)}
             >
               {skill}

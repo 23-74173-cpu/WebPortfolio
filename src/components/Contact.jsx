@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import { useInView } from '../hooks/useInView'
 import { personal } from '../data/content'
 
 const socialLinks = [
@@ -9,7 +8,6 @@ const socialLinks = [
 ]
 
 export default function Contact() {
-  const [ref, inView] = useInView({ threshold: 0.1 })
   const [copied, setCopied] = useState(false)
 
   const handleCopyEmail = useCallback(() => {
@@ -22,18 +20,13 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={ref}
-      className="py-14 sm:py-20 px-5 transition-all duration-500 ease-out"
-      style={{
-        backgroundColor: 'var(--bg-contact)',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(30px)',
-      }}
+      className="py-14 sm:py-20 px-5"
+      style={{ backgroundColor: 'var(--bg-contact)' }}
     >
       <div className="max-w-6xl mx-auto">
         <span className="section-label">Contact</span>
-        <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16">
-          <div className="pb-8" style={{ transitionDelay: '100ms' }}>
+        <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16" data-reveal>
+          <div className="pb-8">
             <h2 className="section-heading">
               Let&rsquo;s talk about your system
             </h2>
@@ -43,7 +36,7 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="space-y-8" style={{ transitionDelay: '200ms' }}>
+          <div className="space-y-8">
             <div>
               <span className="text-xs font-mono tracking-wider uppercase text-extra-faint">
                 Email

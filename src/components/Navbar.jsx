@@ -22,19 +22,12 @@ function scrollToSection(id) {
 
 export default function Navbar() {
   const { toggleTheme, dark } = useTheme()
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [activeSection, setActiveSection] = useState('')
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true))
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
@@ -58,11 +51,9 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 inset-x-0 z-50 transition-[background-color,border-color,color] duration-300"
+      data-nav
+      className="fixed top-0 inset-x-0 z-50 transition-[background-color,border-color] duration-300"
       style={{
-        backgroundColor: scrolled ? 'var(--bg-navbar)' : 'transparent',
-        borderBottom: scrolled ? '1px solid var(--bg-navbar-border)' : 'none',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
         transform: mounted ? 'translateY(0)' : 'translateY(-100%)',
       }}
     >

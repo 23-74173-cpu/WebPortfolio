@@ -1,14 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { personal, stats } from '../data/content'
-import { useScrollY } from '../hooks/useScrollY'
+import { prefersReducedMotion } from '../lib/motion'
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false)
-  const scrollY = useScrollY()
-  const pastHero = scrollY > window.innerHeight * 0.85
 
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true))
+  }, [])
+
+  // Pre-zero the counter overlays before first paint (layout effect) so the
+  // deferred GSAP init later counts them up; skipped under reduced motion so
+  // the static target value is shown.
+  useLayoutEffect(() => {
+    if (prefersReducedMotion()) return
+    const systems = document.querySelector('[data-hero-count="systems"]')
+    const clients = document.querySelector('[data-hero-count="clients"]')
+    if (systems) systems.textContent = '0'
+    if (clients) clients.textContent = '0'
   }, [])
 
   return (
@@ -46,10 +55,11 @@ export default function Hero() {
       </div>
 
       <div className="relative text-center max-w-3xl">
-        <div className="flex items-baseline justify-center gap-6 sm:gap-10 motion-safe:animate-boot-in opacity-0" style={{ animationDelay: '0ms' }}>
+        <div className="flex items-baseline justify-center gap-6 sm:gap-10 motion-safe:animate-boot-in motion-safe:opacity-0">
           <div className="text-right">
-            <span className="block text-6xl sm:text-7xl md:text-8xl font-bold font-display leading-none tracking-tight" style={{ color: 'var(--text-body)' }}>
-              {stats.systemsShipped}
+            <span className="block text-6xl sm:text-7xl md:text-8xl font-bold font-display leading-none tracking-tight relative" style={{ color: 'var(--text-body)' }}>
+              <span className="invisible">{stats.systemsShipped}</span>
+              <span data-hero-count="systems" data-count={stats.systemsShipped} className="absolute inset-0">{stats.systemsShipped}</span>
             </span>
             <span className="font-mono text-xs sm:text-sm mt-1 block text-dim">
               SYSTEMS SHIPPED
@@ -57,8 +67,9 @@ export default function Hero() {
           </div>
           <span className="text-4xl sm:text-5xl md:text-6xl font-body font-thin text-dim">/</span>
           <div className="text-left">
-            <span className="block text-6xl sm:text-7xl md:text-8xl font-bold text-safety font-display leading-none tracking-tight">
-              {stats.clients}
+            <span className="block text-6xl sm:text-7xl md:text-8xl font-bold text-safety font-display leading-none tracking-tight relative">
+              <span className="invisible">{stats.clients}</span>
+              <span data-hero-count="clients" data-count={stats.clients} className="absolute inset-0">{stats.clients}</span>
             </span>
             <span className="font-mono text-xs sm:text-sm mt-1 block text-dim">
               CLIENTS SERVED
@@ -66,7 +77,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="mt-8 motion-safe:animate-boot-in opacity-0" style={{ animationDelay: '500ms' }}>
+        <div className="mt-8 motion-safe:animate-boot-in motion-safe:opacity-0">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-body font-semibold" style={{ color: 'var(--text-body)' }}>
             {personal.name}
           </h1>
@@ -75,7 +86,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="mt-6 motion-safe:animate-boot-in opacity-0" style={{ animationDelay: '700ms' }}>
+        <div className="mt-6 motion-safe:animate-boot-in motion-safe:opacity-0">
           <p className="text-sm sm:text-base font-body leading-relaxed max-w-xl mx-auto text-dim">
             From EHR schema design to IoT sensor pipelines. I build production systems for real clients while finishing my degree.
           </p>
@@ -83,11 +94,12 @@ export default function Hero() {
       </div>
 
       <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 transition-all duration-300 motion-safe:animate-bounce-subtle"
+        data-hero-arrow
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 motion-safe:animate-bounce-subtle"
         aria-hidden="true"
         style={{
-          opacity: pastHero ? 0 : 1,
-          pointerEvents: pastHero ? 'none' : 'auto',
+          opacity: 0,
+          pointerEvents: 'none',
         }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--text-ultra-faint)]">

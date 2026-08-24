@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -13,6 +14,25 @@ import BackgroundLayer from './components/BackgroundLayer'
 import { ThemeProvider } from './components/ThemeTransition'
 
 export default function App() {
+  // GSAP + ScrollTrigger are code-split and initialized during idle (after the
+  // first paint) so they stay off the critical main-thread path while still
+  // running the hero counters on load. This is the single scroll system.
+  useEffect(() => {
+    let disposed = false
+    let cleanup = () => {}
+    const start = () => {
+      import('./lib/animations')
+        .then((m) => { if (!disposed) cleanup = m.initAnimations() })
+        .catch(() => {})
+    }
+    if (typeof requestIdleCallback === 'function') requestIdleCallback(start, { timeout: 800 })
+    else setTimeout(start, 200)
+    return () => {
+      disposed = true
+      cleanup()
+    }
+  }, [])
+
   return (
     <ThemeProvider>
       <ScrollProgress />

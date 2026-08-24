@@ -1,20 +1,13 @@
-import { useInView } from '../hooks/useInView'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { timeline } from '../data/content'
 
 export default function Timeline() {
-  const [ref, inView] = useInView({ threshold: 0.05 })
 
   return (
     <section
       id="experience"
-      ref={ref}
-      className="py-28 sm:py-36 px-5 transition-all duration-500 ease-out"
-      style={{
-        backgroundColor: 'var(--bg-body)',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(30px)',
-      }}
+      className="py-28 sm:py-36 px-5"
+      style={{ backgroundColor: 'var(--bg-body)' }}
     >
       <div className="max-w-4xl mx-auto">
         <span className="section-label">Experience</span>
@@ -22,12 +15,12 @@ export default function Timeline() {
           Timeline
         </h2>
 
-        <div className="mt-14 relative">
+        <div className="mt-14 relative timeline-scrub">
           <div className="timeline-line" aria-hidden="true" />
 
           <div className="space-y-10">
             {timeline.map((item, i) => (
-              <TimelineItem key={i} item={item} index={i} />
+              <TimelineItem key={i} item={item} />
             ))}
           </div>
         </div>
@@ -36,20 +29,11 @@ export default function Timeline() {
   )
 }
 
-function TimelineItem({ item, index }) {
-  const [ref, inView] = useInView({ threshold: 0.15 })
+function TimelineItem({ item }) {
   const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
 
   return (
-    <div
-      ref={ref}
-      className="relative pl-10 motion-safe:opacity-0 transition-all duration-500 ease-out"
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(12px)',
-        transitionDelay: `${index * 80}ms`,
-      }}
-    >
+    <div className="relative pl-10">
       <div
         className={`timeline-dot ${item.type === 'education' ? 'timeline-dot--active' : ''}`}
         aria-hidden="true"

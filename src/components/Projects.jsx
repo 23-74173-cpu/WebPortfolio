@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { useInView } from '../hooks/useInView'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { projects } from '../data/content'
 import hilomImg from '../assets/project-hilom.svg'
@@ -40,7 +39,6 @@ const techPillColors = [
 ]
 
 export default function Projects() {
-  const [ref, inView] = useInView({ threshold: 0.1 })
   const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState(false)
   const restRef = useRef(null)
@@ -67,13 +65,8 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      ref={ref}
-      className="py-28 sm:py-36 px-5 transition-all duration-500 ease-out"
-      style={{
-        backgroundColor: 'var(--bg-body)',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(30px)',
-      }}
+      className="py-28 sm:py-36 px-5"
+      style={{ backgroundColor: 'var(--bg-body)' }}
     >
       <div className="max-w-6xl mx-auto">
         <div>
@@ -150,38 +143,32 @@ export default function Projects() {
   )
 }
 
-function ProjectCard({ project, index }) {
-  const [cardRef, cardInView] = useInView({ threshold: 0.15 })
+function ProjectCard({ project }) {
   const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
   const status = statusConfig[project.status]
-  const delay = index * 100
   const imgSrc = projectImageMap[project.id] || defaultImg
   const isDefaultPlaceholder = imgSrc === defaultImg
 
   return (
     <article
-      ref={(el) => {
-        cardRef.current = el
-        glowRef.current = el
-      }}
+      ref={glowRef}
       {...glowHandlers}
-      className={`relative overflow-hidden rounded-lg p-6 sm:p-8 group transition-all duration-150 motion-safe:opacity-0 transform ${
+      className={`project-card ${project.featured ? 'project-card--featured' : ''} ${
+        project.status === 'in-progress'
+          ? 'project-card--in-progress'
+          : ''
+      } relative overflow-hidden rounded-lg p-6 sm:p-8 group ${
         project.status === 'in-progress'
           ? 'border-l-safety'
           : 'border-l-signal'
       }
       bg-[var(--bg-card)] border-[var(--bg-card-border)]
-      hover:scale-[1.02] hover:shadow-lg hover:shadow-signal/5
       focus-visible:scale-[1.02] focus-visible:shadow-lg focus-visible:shadow-signal/5
-      hover:border-l-safety
       focus-visible:border-l-safety`}
       style={{
         borderWidth: '1px 1px 1px 4px',
         borderStyle: 'solid',
         boxShadow: 'inset 0 0 0 1px var(--bg-card-border-subtle)',
-        opacity: cardInView ? 1 : 0,
-        transform: cardInView ? 'translateY(0)' : 'translateY(6px)',
-        transitionDelay: cardInView ? '0ms' : `${delay}ms`,
       }}
     >
       <div
@@ -192,7 +179,7 @@ function ProjectCard({ project, index }) {
         }}
       />
 
-      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6">
+      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             {project.link && project.link !== 'TODO_ADD_LINK' ? (

@@ -1,25 +1,13 @@
-import { useScrollY } from '../hooks/useScrollY'
-
 export default function BackToTop() {
-  const scrollY = useScrollY()
-  const visible = scrollY > window.innerHeight * 0.8
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
     <div
-      className={`fixed bottom-24 right-6 z-50 group ${
-        visible ? '' : 'pointer-events-none'
-      }`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(10px)',
-        transitionDuration: '200ms',
-        transitionProperty: 'opacity, transform',
-        transitionTimingFunction: 'ease-out',
-      }}
+      data-back-to-top
+      style={{ opacity: 0, pointerEvents: 'none' }}
+      className="fixed bottom-24 right-6 z-50 group"
     >
       <button
         onClick={scrollToTop}

@@ -1,20 +1,12 @@
-import { useInView } from '../hooks/useInView'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { certifications } from '../data/content'
 
 export default function Certifications() {
-  const [ref, inView] = useInView({ threshold: 0.1 })
-
   return (
     <section
       id="certifications"
-      ref={ref}
-      className="py-28 sm:py-36 px-5 transition-all duration-500 ease-out"
-      style={{
-        backgroundColor: 'var(--bg-section-alt)',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(30px)',
-      }}
+      className="py-28 sm:py-36 px-5"
+      style={{ backgroundColor: 'var(--bg-section-alt)' }}
     >
       <div className="max-w-6xl mx-auto">
         <span className="section-label">Certifications</span>
@@ -53,7 +45,7 @@ function CertCard({ group }) {
           background: `radial-gradient(var(--glow-radius) circle at ${glowPos.x}% ${glowPos.y}%, var(--glow-color), transparent 40%)`,
         }}
       />
-      <div className="relative z-[1]">
+      <div className="relative z-[1] cert-card-content">
         <div className="flex items-center gap-2.5 mb-5">
           <div className="w-1 h-6 rounded-full bg-signal" aria-hidden="true" />
           <h3 className="text-sm font-mono tracking-wider uppercase" style={{ color: 'var(--text-body)' }}>
