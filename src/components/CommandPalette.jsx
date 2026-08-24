@@ -30,7 +30,7 @@ function downloadResume() {
   a.remove()
 }
 
-export default function CommandPalette({ onClose }) {
+export default function CommandPalette({ onClose, onConfirm }) {
   const { dark, toggleTheme } = useTheme()
   const rootRef = useRef(null)
 
@@ -49,8 +49,13 @@ export default function CommandPalette({ onClose }) {
     if (e.target === e.currentTarget) onClose()
   }
 
-  const run = (action) => {
-    action()
+  const run = async (action, message) => {
+    try {
+      await action()
+      onConfirm(message)
+    } catch {
+      onConfirm('Action unavailable')
+    }
     onClose()
   }
 
@@ -82,7 +87,7 @@ export default function CommandPalette({ onClose }) {
                 <Command.Item
                   key={s.id}
                   value={s.label}
-                  onSelect={() => run(() => scrollToId(s.id))}
+                  onSelect={() => run(() => scrollToId(s.id), `Moved to ${s.label}`)}
                   className="palette-item"
                 >
                   {s.label}
@@ -91,17 +96,17 @@ export default function CommandPalette({ onClose }) {
             </Command.Group>
 
             <Command.Group heading="Actions">
-              <Command.Item value="Toggle theme" onSelect={() => run(toggleTheme)} className="palette-item">
+              <Command.Item value="Toggle theme" onSelect={() => run(toggleTheme, 'Theme switched')} className="palette-item">
                 Switch to {dark ? 'light' : 'dark'} mode
               </Command.Item>
               <Command.Item
                 value="Copy email address"
-                onSelect={() => run(() => navigator.clipboard?.writeText(personal.email).catch(() => {}))}
+                onSelect={() => run(() => navigator.clipboard?.writeText(personal.email), 'Email copied')}
                 className="palette-item"
               >
                 Copy email address
               </Command.Item>
-              <Command.Item value="Download resume" onSelect={() => run(downloadResume)} className="palette-item">
+              <Command.Item value="Download resume" onSelect={() => run(downloadResume, 'Resume downloading')} className="palette-item">
                 Download résumé
               </Command.Item>
             </Command.Group>
@@ -112,7 +117,7 @@ export default function CommandPalette({ onClose }) {
                   <Command.Item
                     key={p.id}
                     value={`Open ${p.title}`}
-                    onSelect={() => run(() => window.open(p.link, '_blank', 'noopener'))}
+                    onSelect={() => run(() => window.open(p.link, '_blank', 'noopener'), `Opening ${p.title}`)}
                     className="palette-item"
                   >
                     {p.title}

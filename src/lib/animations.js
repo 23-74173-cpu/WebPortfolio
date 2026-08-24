@@ -13,6 +13,7 @@ import { prefersReducedMotion } from './motion'
 //
 // Callers: only React unmount cleanup matters here (this is a single-page app).
 export function initAnimations() {
+  const responsiveMedia = gsap.matchMedia()
   const ctx = gsap.context(() => {
     // ---- Functional scroll UI (always) ----
     const progressBar = document.querySelector('[data-scroll-progress]')
@@ -190,10 +191,12 @@ export function initAnimations() {
       })
     }
 
-    // Projects: the visual centerpiece — cards enter with a slightly larger
-    // translate and a more deliberate stagger than other sections.
     const projects = document.querySelector('#projects')
-    if (projects) {
+    const timeline = document.querySelector('#experience')
+    const certs = document.querySelector('#certifications')
+
+    const createProjectReveal = () => {
+      if (!projects) return
       gsap.from('.project-card-content', {
         opacity: 0,
         y: 36,
@@ -204,9 +207,8 @@ export function initAnimations() {
       })
     }
 
-    // Timeline: one-time heading reveal + scrub-tied line/dot draw-in.
-    const timeline = document.querySelector('#experience')
-    if (timeline) {
+    const createTimelineHeadingReveal = () => {
+      if (!timeline) return
       const tq = gsap.utils.selector(timeline)
       gsap.from(tq('.section-label, .section-heading'), {
         opacity: 0,
@@ -216,6 +218,51 @@ export function initAnimations() {
         stagger: 0.12,
         scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }),
       })
+    }
+
+    const createPinnedStack = (outgoing, incoming) => {
+      if (!outgoing || !incoming) return
+      outgoing.classList.add('stack-outgoing')
+      incoming.classList.add('stack-incoming')
+      const trigger = attachSweep(outgoing, {
+        trigger: outgoing,
+        start: 'top top',
+        // With pinSpacing:false, the incoming section's natural flow position
+        // advances underneath the pinned outgoing section. Matching the pin
+        // range to the outgoing height puts the incoming top at 0 exactly when
+        // the outgoing section is released, avoiding an uncovered handoff.
+        end: () => `+=${outgoing.offsetHeight}`,
+        pin: outgoing,
+        pinSpacing: false,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      })
+      const stack = gsap.timeline({ scrollTrigger: trigger })
+      stack.fromTo(incoming, { yPercent: 100 }, { yPercent: 0, duration: 1, ease: 'none' })
+    }
+
+    // Desktop uses pinned stacking; below 768px it falls back to the existing
+    // one-shot reveals because mobile viewport chrome makes pinning unreliable.
+    responsiveMedia.add('(min-width: 768px)', () => {
+      // Measure Timeline before the first stack applies its incoming yPercent;
+      // otherwise its second pin would start at the transformed position.
+      createPinnedStack(timeline, certs)
+      createPinnedStack(projects, timeline)
+      return () => {
+        projects?.classList.remove('stack-outgoing')
+        timeline?.classList.remove('stack-outgoing', 'stack-incoming')
+        certs?.classList.remove('stack-incoming')
+      }
+    })
+
+    responsiveMedia.add('(max-width: 767px)', () => {
+      createProjectReveal()
+      createTimelineHeadingReveal()
+    })
+
+    // Timeline: scrub-tied line/dot draw-in remains unchanged.
+    if (timeline) {
       const wrap = timeline.querySelector('.timeline-scrub')
       const line = timeline.querySelector('.timeline-line')
       const dots = gsap.utils.toArray('.timeline-dot', wrap)
@@ -233,7 +280,6 @@ export function initAnimations() {
 
     // Certifications: mirror Projects' card entrance but lighter — shorter
     // distance and stagger, reading as a smaller version of the same scheme.
-    const certs = document.querySelector('#certifications')
     if (certs) {
       const q = gsap.utils.selector(certs)
       const tl = gsap.timeline({ scrollTrigger: attachSweep(certs, { trigger: certs, start: 'top 80%', once: true }) })
@@ -253,5 +299,8 @@ export function initAnimations() {
     }
   }, document.body)
 
-  return () => ctx.revert()
+  return () => {
+    responsiveMedia.revert()
+    ctx.revert()
+  }
 }

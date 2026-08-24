@@ -12,6 +12,7 @@ import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
 import BackgroundLayer from './components/BackgroundLayer'
 import Cursor from './components/Cursor'
+import TechMarquee from './components/TechMarquee'
 import { PaletteProvider } from './components/PaletteManager'
 import { ThemeProvider } from './components/ThemeTransition'
 
@@ -67,6 +68,7 @@ export default function App() {
           <Hero />
           <About />
           <Skills />
+          <TechMarquee />
           <Projects />
           <Timeline />
           <Certifications />

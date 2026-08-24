@@ -9,10 +9,19 @@ import { PaletteContext } from './paletteContext'
 export function PaletteProvider({ children }) {
   const [open, setOpen] = useState(false)
   const [Palette, setPalette] = useState(null)
+  const [toast, setToast] = useState('')
   const priorFocusRef = useRef(null)
+  const toastTimerRef = useRef(0)
+
+  const showToast = useCallback((message) => {
+    window.clearTimeout(toastTimerRef.current)
+    setToast(message)
+    toastTimerRef.current = window.setTimeout(() => setToast(''), 1800)
+  }, [])
 
   const openPalette = useCallback(() => {
     priorFocusRef.current = document.activeElement
+    setToast('')
     setOpen(true)
     if (!Palette) {
       import('./CommandPalette').then((m) => setPalette(() => m.default))
@@ -26,6 +35,8 @@ export function PaletteProvider({ children }) {
       if (target && typeof target.focus === 'function') target.focus()
     })
   }, [])
+
+  useEffect(() => () => window.clearTimeout(toastTimerRef.current), [])
 
   useEffect(() => {
     const isEditable = (t) => t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || ''))
@@ -48,7 +59,7 @@ export function PaletteProvider({ children }) {
 
   const dialog = open
     ? Palette
-      ? <Palette onClose={closePalette} />
+      ? <Palette onClose={closePalette} onConfirm={showToast} />
       : (
           <div className="palette-overlay" role="dialog" aria-modal="true" aria-label="Command palette">
             <div className="palette-panel palette-panel--loading">
@@ -62,6 +73,14 @@ export function PaletteProvider({ children }) {
     <PaletteContext.Provider value={{ open, openPalette }}>
       {children}
       {dialog}
+      <div
+        className={`action-toast${toast ? ' action-toast--visible' : ''}`}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {toast}
+      </div>
     </PaletteContext.Provider>
   )
 }

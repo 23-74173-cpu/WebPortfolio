@@ -422,6 +422,115 @@ html.custom-cursor * {
   color: var(--text-muted);
 }
 
+.action-toast {
+  position: fixed;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 95;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--bg-card-border);
+  border-radius: 8px;
+  background-color: var(--bg-navbar);
+  color: var(--text-body);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.action-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Tech stack marquee ---- */
+.tech-marquee-band {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border-divider);
+  border-bottom: 1px solid var(--border-divider);
+  background-color: var(--bg-section-alt);
+  color: var(--text-muted);
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  transform: translate3d(0, 0, 0);
+  animation: techMarquee 32s linear infinite;
+}
+
+.tech-marquee-track--active {
+  will-change: transform;
+}
+
+.tech-marquee-set {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.875rem 1.25rem;
+}
+
+.tech-marquee-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tech-marquee-token > span:first-child {
+  color: var(--accent);
+}
+
+.light .tech-marquee-token > span:first-child {
+  color: var(--signal-dark);
+}
+
+.tech-marquee-divider {
+  color: var(--text-ultra-faint);
+}
+
+@keyframes techMarquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-toast {
+    transform: none;
+    transition: opacity 180ms ease;
+  }
+
+  .tech-marquee-track {
+    width: auto;
+    flex-wrap: wrap;
+    animation: none;
+  }
+
+  .tech-marquee-set--clone {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .stack-outgoing {
+    position: relative;
+    z-index: 1;
+  }
+
+  .stack-incoming {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+  }
+}
+
 /* ---- Section sweep divider ----
    Injected per section by animations.js; a one-shot signal-blue beam that
    scales across the boundary when a section is first entered. Hidden when not

@@ -42,10 +42,10 @@ const filterOptions = [
 const techPillColors = [
   { bg: 'rgba(42,125,225,0.12)', text: '#5A9DEF', light: '#1E5FA8' },
   { bg: 'rgba(56,189,248,0.12)', text: '#38BDF8', light: '#0369A1' },
-  { bg: 'rgba(16,185,129,0.12)', text: '#34D399', light: '#047857' },
-  { bg: 'rgba(139,92,246,0.12)', text: '#A78BFA', light: '#6D28D9' },
-  { bg: 'rgba(251,146,60,0.12)', text: '#FB923C', light: '#C2410C' },
-  { bg: 'rgba(236,72,153,0.12)', text: '#F472B6', light: '#BE185D' },
+  { bg: 'rgba(16,185,129,0.12)', text: '#34D399', light: '#065F46' },
+  { bg: 'rgba(139,92,246,0.12)', text: '#A78BFA', light: '#5B21B6' },
+  { bg: 'rgba(251,146,60,0.12)', text: '#FB923C', light: '#9A3412' },
+  { bg: 'rgba(236,72,153,0.12)', text: '#F472B6', light: '#9D174D' },
 ]
 
 export default function Projects() {
@@ -286,7 +286,7 @@ function ProjectCard({ project }) {
             </div>
           ) : (
             <div
-              className="rounded-lg overflow-hidden border project-card-image-wrapper"
+              className="rounded-lg overflow-hidden border project-card-image-wrapper w-full aspect-[16/9]"
               style={{
                 borderColor: 'var(--bg-card-border)',
                 backgroundColor: 'var(--bg-section-alt)',
