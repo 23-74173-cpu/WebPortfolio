@@ -8,8 +8,8 @@ export default function About() {
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
       <div className="max-w-6xl mx-auto">
-        <span className="section-label">About</span>
-        <div className="mt-6 grid md:grid-cols-5 gap-10 md:gap-16" data-reveal>
+        <span className="section-label motion-safe:opacity-0">About</span>
+        <div className="mt-6 grid md:grid-cols-5 gap-10 md:gap-16 motion-safe:opacity-0" data-reveal>
           <div className="md:col-span-3">
             <h2 className="section-heading leading-tight">
               I build for clients,&nbsp;<br className="hidden sm:block" />

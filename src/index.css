@@ -289,7 +289,7 @@ html.custom-cursor * {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: var(--signal-light);
 }
 
 .light .navbar-cmdk-kbd {
@@ -515,19 +515,6 @@ html.custom-cursor * {
 
   .tech-marquee-set--clone {
     display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .stack-outgoing {
-    position: relative;
-    z-index: 1;
-  }
-
-  .stack-incoming {
-    position: relative;
-    z-index: 2;
-    min-height: 100svh;
   }
 }
 
@@ -779,24 +766,64 @@ main > section:first-child::before {
   50% { opacity: 0.22; }
 }
 
+.timeline-horizontal {
+  min-width: 0;
+}
+
+.timeline-scroll-hint {
+  margin-bottom: 0.75rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timeline-track {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--accent) var(--bg-tag);
+  scrollbar-width: thin;
+  padding: 0.25rem 0 1rem;
+}
+
+.timeline-track-inner {
+  position: relative;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  gap: 1.5rem;
+  padding: 0 0.25rem;
+}
+
 .timeline-line {
   position: absolute;
-  left: 11px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
+  top: 11px;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 2px;
   background-color: var(--border-subtle);
 }
 
 .timeline-dot {
   position: absolute;
   left: 4px;
+  top: 4px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   border: 2px solid var(--accent);
   background-color: var(--bg-body);
   z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .timeline-track-inner {
+    gap: 2rem;
+  }
 }
 
 .timeline-dot--active {

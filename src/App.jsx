@@ -67,8 +67,8 @@ export default function App() {
         <main>
           <Hero />
           <About />
-          <Skills />
           <TechMarquee />
+          <Skills />
           <Projects />
           <Timeline />
           <Certifications />

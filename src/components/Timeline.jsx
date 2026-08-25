@@ -15,13 +15,15 @@ export default function Timeline() {
           Timeline
         </h2>
 
-        <div className="mt-14 relative timeline-scrub">
-          <div className="timeline-line" aria-hidden="true" />
-
-          <div className="space-y-10">
-            {timeline.map((item, i) => (
-              <TimelineItem key={i} item={item} />
-            ))}
+        <div className="mt-14 relative timeline-horizontal">
+          <p className="timeline-scroll-hint">Scroll horizontally <span aria-hidden="true">→</span></p>
+          <div className="timeline-track" role="list" aria-label="Experience timeline" tabIndex={0}>
+            <div className="timeline-track-inner">
+              <div className="timeline-line" aria-hidden="true" />
+              {timeline.map((item, i) => (
+                <TimelineItem key={i} item={item} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -34,7 +36,7 @@ function TimelineItem({ item }) {
   const { dark } = useTheme()
 
   return (
-    <div className="relative pl-10">
+    <div className="timeline-item relative pt-10 w-[min(78vw,24rem)] shrink-0 snap-start" role="listitem">
       <div
         className={`timeline-dot ${item.type === 'education' ? 'timeline-dot--active' : ''}`}
         aria-hidden="true"
