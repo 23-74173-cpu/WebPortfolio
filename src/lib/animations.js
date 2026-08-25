@@ -182,20 +182,22 @@ export function initAnimations() {
     revealSection('#contact', { y: -20, duration: 0.6, stagger: 0.12 })
 
     const projects = document.querySelector('#projects')
+    const projectsPinWrap = document.querySelector('#projects-pin-wrap')
     const timeline = document.querySelector('#experience')
     const certs = document.querySelector('#certifications')
 
-    // Projects scroll-lock: pin the section and reveal featured cards one at a
-    // time as the user scrolls. Pin range is proportional to the number of
-    // featured cards so each card gets its own "page" of scroll distance.
-    if (projects) {
-      const pq = gsap.utils.selector(projects)
-      const featuredCards = pq('.project-card--featured .project-card-content')
+    // Projects scroll-lock: pin just the featured cards wrapper and reveal
+    // cards one at a time as the user scrolls. Pin range is proportional to
+    // the number of featured cards so each card gets ~1 viewport height of
+    // scroll distance.
+    if (projectsPinWrap) {
+      const pwq = gsap.utils.selector(projectsPinWrap)
+      const featuredCards = pwq('.project-card-content')
       if (featuredCards.length) {
-        const getPinDistance = () => featuredCards.length * window.innerHeight * 0.5
+        const getPinDistance = () => featuredCards.length * window.innerHeight
         const tl = gsap.timeline({
           scrollTrigger: attachSweep(projects, {
-            trigger: projects,
+            trigger: projectsPinWrap,
             start: 'top top',
             end: () => `+=${getPinDistance()}`,
             pin: true,

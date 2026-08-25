@@ -87,7 +87,7 @@ export default function Projects() {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
+        <div className="max-w-6xl mx-auto px-5 pt-4">
 
         <div className="mt-8 flex flex-wrap gap-2">
           {filterOptions.map(opt => (
@@ -105,14 +105,16 @@ export default function Projects() {
           ))}
         </div>
 
-        <div className="mt-6 space-y-8">
-          {featured.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
-          ))}
+        <div id="projects-pin-wrap" className="mt-6">
+          <div className="space-y-8">
+            {featured.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i} />
+            ))}
+          </div>
         </div>
 
         {rest.length > 0 && (
-          <>
+          <div className="pb-28">
             <div
               id="projects-rest"
               ref={restRef}
@@ -149,7 +151,7 @@ export default function Projects() {
                 </button>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
       </div>
