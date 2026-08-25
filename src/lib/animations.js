@@ -202,11 +202,17 @@ export function initAnimations() {
 
     // Projects stacked-card reveal: pin the featured cards wrapper and
     // animate cards 1..N upward to stack over card 0 as the user scrolls.
-    // Card 0 is the anchor — always visible. Each card gets ~1 viewport
-    // height of scroll distance. Mobile falls back to normal list.
+    // Card 0 is the anchor — always visible. Cards 1+ start hidden (opacity 0)
+    // and slide up with a large overlap (~75% of card height) so they
+    // progressively cover the previous card. Each card gets equal scroll distance.
+    // Mobile falls back to normal list.
     if (projectsPinWrap && window.innerWidth >= 768) {
       const featuredCards = gsap.utils.selector(projectsPinWrap)('.project-card--featured')
       if (featuredCards.length > 1) {
+        // Measure actual card height for overlap calculation
+        const firstCardHeight = featuredCards[0].offsetHeight || 400
+        const overlapPx = Math.round(firstCardHeight * 0.75)
+
         const getPinDistance = () => (featuredCards.length - 1) * window.innerHeight
         const tl = gsap.timeline({
           scrollTrigger: attachSweep(projects, {
@@ -223,21 +229,24 @@ export function initAnimations() {
         // Card 0 stays visible as the anchor — always at opacity 1, y 0
         // (its natural document-flow position).
 
-        // Cards 1..N each animate upward to stack over card 0.
-        // segmentStart..segmentEnd defines the scroll range for each card.
+        // Cards 1..N each start hidden, then fade in and slide upward to
+        // stack over the previous card. The large overlap (~75% card height)
+        // creates a dramatic stacked-card effect.
         featuredCards.forEach((card, i) => {
           if (i === 0) return
-          const segmentStart = (i - 1) / (featuredCards.length - 1)
-          const segmentEnd = i / (featuredCards.length - 1)
-          const overlap = i * 40 // px offset so each card's top edge is visible
+          const segDuration = 1 / (featuredCards.length - 1)
+          const segStart = (i - 1) * segDuration
+
+          // Fade in: card starts invisible, becomes visible as it enters
           tl.fromTo(card,
-            { y: 0 },
+            { opacity: 0, y: 0 },
             {
-              y: () => -overlap,
-              duration: segmentEnd - segmentStart,
+              opacity: 1,
+              y: () => -overlapPx * i,
+              duration: segDuration,
               ease: 'power2.out',
             },
-            segmentStart,
+            segStart,
           )
         })
       }

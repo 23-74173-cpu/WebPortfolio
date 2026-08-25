@@ -596,11 +596,15 @@ html.custom-cursor * {
   z-index: 1;
 }
 
-/* During the pin, cards overlap. The active card (last in the stack) should
-   appear above earlier cards. Set via GSAP or nth-child stacking. */
+/* During the pin, cards overlap. Featured cards in the pin wrapper get a
+   fully opaque background so text from lower cards doesn't bleed through. */
 #projects-pin-wrap .project-card--featured {
   position: relative;
+  background: var(--bg-body) !important;
+  z-index: 1;
 }
+#projects-pin-wrap .project-card--featured:nth-child(2) { z-index: 2; }
+#projects-pin-wrap .project-card--featured:nth-child(3) { z-index: 3; }
 
 /* Light mode: reduce the numbered indicator opacity for better contrast. */
 .light .project-card-number {
