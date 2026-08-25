@@ -786,6 +786,7 @@ main > section:first-child::before {
 }
 
 .timeline-track {
+  --timeline-card-width: clamp(20rem, 40vw, 28rem);
   position: relative;
   overflow-x: auto;
   overflow-y: hidden;
@@ -808,7 +809,7 @@ main > section:first-child::before {
 }
 
 .timeline-item {
-  flex: 0 0 min(78vw, 24rem);
+  flex: 0 0 var(--timeline-card-width);
 }
 
 .timeline-line {
@@ -844,10 +845,6 @@ main > section:first-child::before {
 
   .timeline-track-inner {
     gap: 2rem;
-  }
-
-  .timeline-item {
-    flex-basis: clamp(20rem, 40vw, 28rem);
   }
 }
 
