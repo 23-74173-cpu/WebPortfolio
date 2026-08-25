@@ -161,6 +161,16 @@
   }
 }
 
+/* Sticky section heading: sticks below the fixed navbar (h-14 = 3.5rem) while
+   scrolling through its parent container. Parent must be the section's
+   min-h-svh wrapper so the heading detaches when the section scrolls past. */
+.section-sticky {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 10;
+  width: 100%;
+}
+
 .project-card-image {
   transition: filter 0.3s ease;
 }
@@ -835,10 +845,6 @@ main > section:first-child::before {
 }
 
 @media (min-width: 768px) {
-  #experience {
-    min-height: 100svh;
-  }
-
   .timeline-track {
     overflow-x: hidden;
   }

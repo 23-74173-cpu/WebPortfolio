@@ -38,11 +38,16 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-14 sm:py-20 px-5"
       style={{ backgroundColor: 'var(--bg-contact)' }}
     >
-      <div className="max-w-6xl mx-auto">
-        <span className="section-label">Contact</span>
+      <div className="min-h-svh">
+        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-contact)' }}>
+          <div className="max-w-6xl mx-auto px-5">
+            <span className="section-label">Contact</span>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
         <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16" data-reveal>
           <div className="pb-8">
             <h2 className="section-heading">
@@ -146,7 +151,6 @@ export default function Contact() {
                 id="download-resume-btn"
                 type="button"
                 onClick={handleResume}
-                aria-label="Download resume"
                 className="inline-flex items-center gap-2 px-5 py-2.5 border border-[var(--text-muted)] text-[var(--text-muted)] text-sm font-medium rounded hover:bg-signal hover:text-paper hover:border-signal transition-colors font-body"
               >
                 {resumeState === 'idle' ? (
@@ -163,6 +167,7 @@ export default function Contact() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   )

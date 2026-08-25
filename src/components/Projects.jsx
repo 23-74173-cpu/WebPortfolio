@@ -75,16 +75,19 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="py-28 sm:py-36 px-5"
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
-      <div className="max-w-6xl mx-auto">
-        <div>
-          <span className="section-label">Featured Projects</span>
-          <h2 className="section-heading mt-3">
-            Production systems I&rsquo;ve built
-          </h2>
+      <div className="min-h-svh">
+        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-body)' }}>
+          <div className="max-w-6xl mx-auto px-5">
+            <span className="section-label">Featured Projects</span>
+            <h2 className="section-heading mt-3">
+              Production systems I&rsquo;ve built
+            </h2>
+          </div>
         </div>
+
+        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
 
         <div className="mt-8 flex flex-wrap gap-2">
           {filterOptions.map(opt => (
@@ -148,6 +151,7 @@ export default function Projects() {
             )}
           </>
         )}
+      </div>
       </div>
     </section>
   )

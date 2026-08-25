@@ -138,6 +138,8 @@ export function initAnimations() {
 
     // About: fade + translateY like before, but with a top-edge glow fading in
     // just ahead of the content, reading as "arriving from above the fold".
+    // Now includes the merged Skills grid — the card-pill cascade targets
+    // .skill-card-content / .skill-pill selectors within #about.
     const about = document.querySelector('#about')
     if (about) {
       const qAbout = gsap.utils.selector(about)
@@ -161,63 +163,57 @@ export function initAnimations() {
           },
           0.05
         )
-    }
-
-    // Contact: fade + translateY from above (negative), settling downward, to
-    // close the page rather than repeat About's upward arrival.
-    revealSection('#contact', { y: -20, duration: 0.6, stagger: 0.12 })
-
-    // Skills: heading, then each group's pills cascade in — plus the section
-    // container settling scaleY(0.98 -> 1) so the whole panel arrives as the
-    // pills cascade.
-    const skills = document.querySelector('#skills')
-    if (skills) {
-      const q = gsap.utils.selector(skills)
-      const contents = q('.skill-card-content')
-      const tl = gsap.timeline({ scrollTrigger: attachSweep(skills, { trigger: skills, start: 'top 78%', once: true }) })
-      tl.from(skills, { scaleY: 0.98, transformOrigin: 'top center', duration: 0.7, ease: 'power2.out' }, 0)
-      tl.from(q('.section-label, .section-heading'), {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.1,
-      }, 0.1)
-      contents.forEach((content, i) => {
-        tl.from(content, { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out' }, 0.2 + i * 0.12)
+      // Skill cards cascade within the merged About section
+      const skillContents = qAbout('.skill-card-content')
+      skillContents.forEach((content, i) => {
+        tl.from(content, { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out' }, 0.3 + i * 0.12)
         tl.from(content.querySelectorAll('.skill-pill'), {
           opacity: 0,
           y: 8,
           duration: 0.35,
           stagger: 0.03,
           ease: 'power2.out',
-        }, 0.25 + i * 0.12)
+        }, 0.35 + i * 0.12)
       })
     }
+
+    // Contact: fade + translateY from above (negative), settling downward, to
+    // close the page rather than repeat About's upward arrival.
+    revealSection('#contact', { y: -20, duration: 0.6, stagger: 0.12 })
 
     const projects = document.querySelector('#projects')
     const timeline = document.querySelector('#experience')
     const certs = document.querySelector('#certifications')
 
-    // Projects keeps a scoped, explicit one-shot reveal for the three featured
-    // cards. CSS hides the content before this async animation module arrives;
-    // fromTo makes the visible end state explicit instead of relying on the
-    // current computed opacity.
+    // Projects scroll-lock: pin the section and reveal featured cards one at a
+    // time as the user scrolls. Pin range is proportional to the number of
+    // featured cards so each card gets its own "page" of scroll distance.
     if (projects) {
       const pq = gsap.utils.selector(projects)
-      gsap.fromTo(
-        pq('.project-card--featured .project-card-content'),
-        { opacity: 0, y: 36 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.18,
-          ease: 'power2.out',
-          immediateRender: false,
-          scrollTrigger: attachSweep(projects, { trigger: projects, start: 'top 78%', once: true }),
-        }
-      )
+      const featuredCards = pq('.project-card--featured .project-card-content')
+      if (featuredCards.length) {
+        const getPinDistance = () => featuredCards.length * window.innerHeight * 0.5
+        const tl = gsap.timeline({
+          scrollTrigger: attachSweep(projects, {
+            trigger: projects,
+            start: 'top top',
+            end: () => `+=${getPinDistance()}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+          }),
+        })
+        featuredCards.forEach((card, i) => {
+          const segmentStart = i / featuredCards.length
+          const segmentEnd = (i + 1) / featuredCards.length
+          tl.fromTo(card,
+            { opacity: 0, y: 60 },
+            { opacity: 1, y: 0, duration: segmentEnd - segmentStart, ease: 'power2.out' },
+            segmentStart,
+          )
+        })
+      }
     }
 
     // Timeline uses native horizontal scrolling on small viewports and a

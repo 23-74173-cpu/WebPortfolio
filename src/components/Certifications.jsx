@@ -5,19 +5,24 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="py-28 sm:py-36 px-5"
       style={{ backgroundColor: 'var(--bg-section-alt)' }}
     >
-      <div className="max-w-6xl mx-auto">
-        <span className="section-label">Certifications</span>
-        <h2 className="section-heading mt-3">
-          Industry credentials
-        </h2>
+      <div className="min-h-svh">
+        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-section-alt)' }}>
+          <div className="max-w-6xl mx-auto px-5">
+            <span className="section-label">Certifications</span>
+            <h2 className="section-heading mt-3">
+              Industry credentials
+            </h2>
+          </div>
+        </div>
 
-        <div className="mt-10 grid sm:grid-cols-2 gap-5">
-          {certifications.map((group) => (
-            <CertCard key={group.title} group={group} />
-          ))}
+        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
+          <div className="grid sm:grid-cols-2 gap-5">
+            {certifications.map((group) => (
+              <CertCard key={group.title} group={group} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
