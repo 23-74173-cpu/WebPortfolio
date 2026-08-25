@@ -74,16 +74,11 @@ export default function About() {
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
       <div className="min-h-svh">
-        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-body)' }}>
-          <div className="max-w-6xl mx-auto px-5">
-            <span className="section-label">About &amp; Stack</span>
-            <h2 className="section-heading mt-3">
-              What I do &amp; how I work
-            </h2>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
+        <div className="max-w-6xl mx-auto px-5 pt-20 pb-28">
+          <span className="section-label">About &amp; Stack</span>
+          <h2 className="section-heading mt-3">
+            What I do &amp; how I work
+          </h2>
           <div className="grid md:grid-cols-5 gap-10 md:gap-16" data-reveal>
             {/* Left: About */}
             <div className="md:col-span-3">

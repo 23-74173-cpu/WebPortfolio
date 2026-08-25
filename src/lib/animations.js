@@ -191,8 +191,7 @@ export function initAnimations() {
     // the number of featured cards so each card gets ~1 viewport height of
     // scroll distance.
     if (projectsPinWrap) {
-      const pwq = gsap.utils.selector(projectsPinWrap)
-      const featuredCards = pwq('.project-card-content')
+      const featuredCards = gsap.utils.selector(projectsPinWrap)('.project-card--featured')
       if (featuredCards.length) {
         const getPinDistance = () => featuredCards.length * window.innerHeight
         const tl = gsap.timeline({

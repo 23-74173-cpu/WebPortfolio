@@ -78,16 +78,11 @@ export default function Projects() {
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
       <div className="min-h-svh">
-        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-body)' }}>
-          <div className="max-w-6xl mx-auto px-5">
-            <span className="section-label">Featured Projects</span>
-            <h2 className="section-heading mt-3">
-              Production systems I&rsquo;ve built
-            </h2>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-5 pt-4">
+        <div className="max-w-6xl mx-auto px-5 pt-20 pb-4">
+          <span className="section-label">Featured Projects</span>
+          <h2 className="section-heading mt-3">
+            Production systems I&rsquo;ve built
+          </h2>
 
         <div className="mt-8 flex flex-wrap gap-2">
           {filterOptions.map(opt => (
@@ -197,7 +192,7 @@ function ProjectCard({ project }) {
         }}
       />
 
-      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content motion-safe:opacity-0">
+      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             {project.link && project.link !== 'TODO_ADD_LINK' ? (

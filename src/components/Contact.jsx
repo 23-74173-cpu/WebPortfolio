@@ -41,14 +41,9 @@ export default function Contact() {
       style={{ backgroundColor: 'var(--bg-contact)' }}
     >
       <div className="min-h-svh">
-        <div className="section-sticky pt-20 pb-2" style={{ backgroundColor: 'var(--bg-contact)' }}>
-          <div className="max-w-6xl mx-auto px-5">
-            <span className="section-label">Contact</span>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-5 pb-28 pt-4">
-        <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16" data-reveal>
+        <div className="max-w-6xl mx-auto px-5 pt-20 pb-28">
+          <span className="section-label">Contact</span>
+          <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16" data-reveal>
           <div className="pb-8">
             <h2 className="section-heading">
               Let&rsquo;s talk about your system
