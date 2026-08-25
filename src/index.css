@@ -839,7 +839,7 @@ main > section:first-child::before {
   }
 
   .timeline-track {
-    overflow-x: visible;
+    overflow-x: hidden;
   }
 
   .timeline-track-inner {

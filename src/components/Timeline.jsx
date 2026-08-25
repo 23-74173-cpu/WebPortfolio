@@ -36,7 +36,7 @@ function TimelineItem({ item }) {
   const { dark } = useTheme()
 
   return (
-    <div className="timeline-item relative pt-10 w-[min(78vw,24rem)] shrink-0 snap-start" role="listitem">
+    <div className="timeline-item relative pt-10 shrink-0 snap-start" role="listitem">
       <div
         className={`timeline-dot ${item.type === 'education' ? 'timeline-dot--active' : ''}`}
         aria-hidden="true"

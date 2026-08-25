@@ -230,20 +230,18 @@ export function initAnimations() {
       const inner = timeline.querySelector('.timeline-track-inner')
       const line = timeline.querySelector('.timeline-line')
       const dots = gsap.utils.toArray('.timeline-dot', wrap)
+      const items = gsap.utils.toArray('.timeline-item', wrap)
       if (wrap && line && dots.length) {
-        const addDotAndLineReveal = (tl) => {
-          tl.from(tq('.section-label, .section-heading'), {
-            opacity: 0,
-            y: 20,
-            duration: 0.7,
-            ease: 'power2.out',
-            stagger: 0.12,
-          }, 0)
-          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0.2)
-          dots.forEach((dot, i) => {
-            tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.35 + i * 0.08)
-          })
-        }
+        // Heading fires once on scroll-into-view — separate from the scrub
+        // timeline so it doesn't hijack pin-range positions.
+        gsap.from(tq('.section-label, .section-heading'), {
+          opacity: 0,
+          y: 20,
+          duration: 0.7,
+          ease: 'power2.out',
+          stagger: 0.12,
+          scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }),
+        })
 
         responsiveMedia.add('(min-width: 768px)', () => {
           if (!track || !inner) return
@@ -258,15 +256,34 @@ export function initAnimations() {
               pinSpacing: true,
               scrub: true,
               invalidateOnRefresh: true,
+              onUpdate(self) {
+                const progress = self.progress
+                const trackWidth = inner.scrollWidth - track.clientWidth
+                const scrolled = progress * trackWidth
+                const trackCenter = scrolled + track.clientWidth / 2
+                let activeIdx = 0
+                let minDist = Infinity
+                items.forEach((item, i) => {
+                  const itemCenter = item.offsetLeft + item.offsetWidth / 2
+                  const dist = Math.abs(itemCenter - trackCenter)
+                  if (dist < minDist) { minDist = dist; activeIdx = i }
+                })
+                dots.forEach((dot, i) => {
+                  dot.classList.toggle('timeline-dot--active', i === activeIdx)
+                })
+              },
             }),
           })
           tl.fromTo(inner, { x: 0 }, { x: () => -getDistance(), ease: 'none', duration: 1 }, 0)
-          addDotAndLineReveal(tl)
+          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0)
         })
 
         responsiveMedia.add('(max-width: 767px)', () => {
           const tl = gsap.timeline({ scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }) })
-          addDotAndLineReveal(tl)
+          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0)
+          dots.forEach((dot, i) => {
+            tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.35 + i * 0.08)
+          })
         })
       }
     }
