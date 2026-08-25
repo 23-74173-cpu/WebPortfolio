@@ -790,9 +790,12 @@ main > section:first-child::before {
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scrollbar-color: var(--accent) var(--bg-tag);
-  scrollbar-width: thin;
+  scrollbar-width: none;
   padding: 0.25rem 0 1rem;
+}
+
+.timeline-track::-webkit-scrollbar {
+  display: none;
 }
 
 .timeline-track-inner {
