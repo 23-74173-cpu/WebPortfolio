@@ -836,7 +836,7 @@ main > section:first-child::before {
   }
 
   .timeline-track {
-    overflow-x: hidden;
+    overflow-x: visible;
   }
 
   .timeline-track-inner {
