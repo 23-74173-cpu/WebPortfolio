@@ -17,6 +17,12 @@ import { PaletteProvider } from './components/PaletteManager'
 import { ThemeProvider } from './components/ThemeTransition'
 
 export default function App() {
+  // Force scroll to top on every refresh / navigation so the user always sees
+  // the hero first, regardless of browser scroll-restoration behaviour.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   // GSAP + ScrollTrigger are code-split and initialized during idle (after the
   // first paint) so they stay off the critical main-thread path while still
   // running the hero counters on load. This is the single scroll system.
