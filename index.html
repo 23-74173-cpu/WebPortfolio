@@ -92,12 +92,19 @@
         }
         buildIndicator()
 
+        var appendedAt = 0
+        var minDisplayMs = 500
+
         function hide() {
           if (!overlay.parentNode) return
-          overlay.style.opacity = '0'
+          var elapsed = Date.now() - appendedAt
+          var remaining = Math.max(0, minDisplayMs - elapsed)
           window.setTimeout(function () {
-            if (overlay.parentNode) overlay.parentNode.removeChild(overlay)
-          }, 350)
+            overlay.style.opacity = '0'
+            window.setTimeout(function () {
+              if (overlay.parentNode) overlay.parentNode.removeChild(overlay)
+            }, 300)
+          }, remaining)
         }
 
         function onReady() {
@@ -107,15 +114,10 @@
         window.__appReady = onReady
         window.addEventListener('load', onReady, { once: true })
 
-        var conn = (navigator.connection && navigator.connection.effectiveType) || null
-        var slow = conn === 'slow-2g' || conn === '2g' || conn === '3g'
-        var delay = conn === null ? 500 : slow ? 300 : 650
-
-        window.setTimeout(function () {
-          if (ready) return
-          appended = true
-          document.body.appendChild(overlay)
-        }, delay)
+        // Always append immediately so every refresh shows the loader.
+        appended = true
+        appendedAt = Date.now()
+        document.body.appendChild(overlay)
       })()
     </script>
   </head>
