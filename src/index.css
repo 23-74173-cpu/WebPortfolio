@@ -590,6 +590,23 @@ html.custom-cursor * {
   }
 }
 
+/* Stacked-card numbered indicator: large semi-transparent number in the
+   top-right corner of each featured card during the scroll-lock animation. */
+.project-card-number {
+  z-index: 1;
+}
+
+/* During the pin, cards overlap. The active card (last in the stack) should
+   appear above earlier cards. Set via GSAP or nth-child stacking. */
+#projects-pin-wrap .project-card--featured {
+  position: relative;
+}
+
+/* Light mode: reduce the numbered indicator opacity for better contrast. */
+.light .project-card-number {
+  opacity: 0.22 !important;
+}
+
 @keyframes floatOrb {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(30px, -40px) scale(1.1); }
@@ -880,4 +897,5 @@ main > section:first-child::before {
     display: none;
   }
   .project-card-image { transition: none; }
+  .project-card-number { opacity: 0.18 !important; }
 }

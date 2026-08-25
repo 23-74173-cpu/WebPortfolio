@@ -77,12 +77,11 @@ export default function Projects() {
       id="projects"
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
-      <div className="min-h-svh">
-        <div className="max-w-6xl mx-auto px-5 pt-20 pb-4">
-          <span className="section-label">Featured Projects</span>
-          <h2 className="section-heading mt-3">
-            Production systems I&rsquo;ve built
-          </h2>
+      <div className="max-w-6xl mx-auto px-5 pt-20 pb-4">
+        <span className="section-label">Featured Projects</span>
+        <h2 className="section-heading mt-3">
+          Production systems I&rsquo;ve built
+        </h2>
 
         <div className="mt-8 flex flex-wrap gap-2">
           {filterOptions.map(opt => (
@@ -99,62 +98,59 @@ export default function Projects() {
             </button>
           ))}
         </div>
+      </div>
 
-        <div id="projects-pin-wrap" className="mt-6">
-          <div className="space-y-8">
-            {featured.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </div>
-        </div>
+      <div id="projects-pin-wrap" className="max-w-6xl mx-auto px-5 mt-6 relative">
+        {featured.map((project, i) => (
+          <ProjectCard key={project.id} project={project} index={i} total={featured.length} />
+        ))}
+      </div>
 
-        {rest.length > 0 && (
-          <div className="pb-28">
-            <div
-              id="projects-rest"
-              ref={restRef}
-              tabIndex={-1}
-              className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
-              style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
-            >
-              <div className="overflow-hidden min-h-0">
-                <div className="mt-8 space-y-8">
-                  {rest.map((project, i) => (
-                    <ProjectCard key={project.id} project={project} index={i} />
-                  ))}
-                </div>
+      {rest.length > 0 && (
+        <div className="max-w-6xl mx-auto px-5 pb-28">
+          <div
+            id="projects-rest"
+            ref={restRef}
+            tabIndex={-1}
+            className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
+            style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
+          >
+            <div className="overflow-hidden min-h-0">
+              <div className="mt-8 space-y-8">
+                {rest.map((project, i) => (
+                  <ProjectCard key={project.id} project={project} index={i} />
+                ))}
               </div>
             </div>
-
-            {filter === 'all' && (
-              <div className="mt-10 flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => setExpanded(e => !e)}
-                  aria-expanded={showAll}
-                  aria-controls="projects-rest"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
-                  style={{
-                    borderColor: 'var(--text-muted)',
-                    color: 'var(--text-muted)',
-                  }}
-                >
-                  {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-              </div>
-            )}
           </div>
-        )}
-      </div>
-      </div>
+
+          {filter === 'all' && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setExpanded(e => !e)}
+                aria-expanded={showAll}
+                aria-controls="projects-rest"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
+                style={{
+                  borderColor: 'var(--text-muted)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   )
 }
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, index, total }) {
   const { glowRef, glowPos, glowVisible, glowHandlers } = useMouseGlow()
   const { dark } = useTheme()
   const status = statusConfig[project.status]
@@ -183,7 +179,18 @@ function ProjectCard({ project }) {
         borderStyle: 'solid',
         boxShadow: 'inset 0 0 0 1px var(--bg-card-border-subtle)',
       }}
+      data-card-index={index}
     >
+      {/* Numbered indicator for stacked-card layout */}
+      {total > 1 && (
+        <span
+          className="project-card-number absolute -top-2 -left-1 text-[80px] sm:text-[100px] font-display font-bold leading-none select-none pointer-events-none"
+          style={{ color: 'var(--text-muted)', opacity: 0.25 }}
+          aria-hidden="true"
+        >
+          {String(index + 1).padStart(2, '0')}
+        </span>
+      )}
       <div
         className={`card-glow ${glowVisible ? 'card-glow--visible' : ''}`}
         aria-hidden="true"
@@ -192,7 +199,7 @@ function ProjectCard({ project }) {
         }}
       />
 
-      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content">
+      <div className="relative z-[2] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             {project.link && project.link !== 'TODO_ADD_LINK' ? (

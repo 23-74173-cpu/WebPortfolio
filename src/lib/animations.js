@@ -200,14 +200,14 @@ export function initAnimations() {
     const timeline = document.querySelector('#experience')
     const certs = document.querySelector('#certifications')
 
-    // Projects scroll-lock: pin just the featured cards wrapper and reveal
-    // cards one at a time as the user scrolls. Pin range is proportional to
-    // the number of featured cards so each card gets ~1 viewport height of
-    // scroll distance.
-    if (projectsPinWrap) {
+    // Projects stacked-card reveal: pin the featured cards wrapper and
+    // animate cards 1..N upward to stack over card 0 as the user scrolls.
+    // Card 0 is the anchor — always visible. Each card gets ~1 viewport
+    // height of scroll distance. Mobile falls back to normal list.
+    if (projectsPinWrap && window.innerWidth >= 768) {
       const featuredCards = gsap.utils.selector(projectsPinWrap)('.project-card--featured')
-      if (featuredCards.length) {
-        const getPinDistance = () => featuredCards.length * window.innerHeight
+      if (featuredCards.length > 1) {
+        const getPinDistance = () => (featuredCards.length - 1) * window.innerHeight
         const tl = gsap.timeline({
           scrollTrigger: attachSweep(projects, {
             trigger: projectsPinWrap,
@@ -220,35 +220,23 @@ export function initAnimations() {
           }),
         })
 
-        // Card 0 gets a separate one-shot reveal so it's visible immediately
-        // when the section enters view — not gated behind the scrub timeline
-        // (which only activates at `start: 'top top'` and leaves cards hidden
-        // at progress 0).  Cards 1..N are animated by the scrub.
-        if (featuredCards.length > 1) {
-          gsap.fromTo(featuredCards[0],
-            { opacity: 0, y: 60 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              ease: 'power2.out',
-              clearProps: 'transform,opacity',
-              scrollTrigger: {
-                trigger: projectsPinWrap,
-                start: 'top 85%',
-                once: true,
-              },
-            },
-          )
-        }
+        // Card 0 stays visible as the anchor — always at opacity 1, y 0
+        // (its natural document-flow position).
 
+        // Cards 1..N each animate upward to stack over card 0.
+        // segmentStart..segmentEnd defines the scroll range for each card.
         featuredCards.forEach((card, i) => {
-          if (i === 0) return // handled by one-shot above
+          if (i === 0) return
           const segmentStart = (i - 1) / (featuredCards.length - 1)
           const segmentEnd = i / (featuredCards.length - 1)
+          const overlap = i * 40 // px offset so each card's top edge is visible
           tl.fromTo(card,
-            { opacity: 0, y: 60 },
-            { opacity: 1, y: 0, duration: segmentEnd - segmentStart, ease: 'power2.out' },
+            { y: 0 },
+            {
+              y: () => -overlap,
+              duration: segmentEnd - segmentStart,
+              ease: 'power2.out',
+            },
             segmentStart,
           )
         })

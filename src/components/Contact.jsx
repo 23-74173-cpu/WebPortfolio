@@ -38,10 +38,10 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      className="flex flex-col items-center justify-center min-h-svh py-20"
       style={{ backgroundColor: 'var(--bg-contact)' }}
     >
-      <div className="min-h-svh">
-        <div className="max-w-6xl mx-auto px-5 pt-20 pb-28">
+      <div className="max-w-6xl mx-auto px-5 w-full">
           <span className="section-label">Contact</span>
           <div className="mt-6 grid md:grid-cols-2 gap-10 md:gap-16" data-reveal>
           <div className="pb-8">
@@ -161,8 +161,7 @@ export default function Contact() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+          </div>
       </div>
     </section>
   )
