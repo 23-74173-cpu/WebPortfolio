@@ -65,8 +65,8 @@ export default function App() {
         <Navbar />
         <main>
           <Hero />
-          <About />
           <TechMarquee />
+          <About />
           <Projects />
           <Timeline />
           <Certifications />

@@ -5,14 +5,13 @@ import { usePalette } from './paletteContext'
 
 const links = [
   { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
   { label: 'Certifications', href: '#certifications' },
   { label: 'Contact', href: '#contact' },
 ]
 
-const sectionIds = ['hero', 'about', 'skills', 'projects', 'experience', 'certifications', 'contact']
+const sectionIds = ['hero', 'about', 'projects', 'experience', 'certifications', 'contact']
 
 function scrollToSection(id) {
   const el = document.getElementById(id)
@@ -42,7 +41,7 @@ export default function Navbar() {
           }
         }
       },
-      { threshold: 0.3, rootMargin: '-80px 0px 0px 0px' }
+      { threshold: 0.2, rootMargin: '-80px 0px 0px 0px' }
     )
     for (const id of sectionIds) {
       const el = document.getElementById(id)
