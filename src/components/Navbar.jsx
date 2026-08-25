@@ -18,6 +18,27 @@ function scrollToSection(id) {
   if (!el) return
   const y = el.getBoundingClientRect().top + window.scrollY - 56
   window.scrollTo({ top: y, behavior: 'smooth' })
+  // Dispatch a scroll event after smooth scroll finishes so GSAP ScrollTrigger
+  // recalculates pin/scrub positions (otherwise scrub timelines stay stuck).
+  const onDone = () => {
+    window.dispatchEvent(new Event('scroll'))
+    window.removeEventListener('scrollend', onDone)
+  }
+  if ('scrollend' in window) {
+    window.addEventListener('scrollend', onDone, { once: true })
+  } else {
+    // Fallback: poll until scroll settles
+    let lastY = window.scrollY, ticking = false
+    const check = () => {
+      if (window.scrollY === lastY) {
+        window.dispatchEvent(new Event('scroll'))
+        return
+      }
+      lastY = window.scrollY
+      requestAnimationFrame(check)
+    }
+    setTimeout(() => requestAnimationFrame(check), 600)
+  }
 }
 
 export default function Navbar() {

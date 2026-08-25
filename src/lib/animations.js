@@ -126,14 +126,18 @@ export function initAnimations() {
       const section = document.querySelector(id)
       if (!section) return
       const q = gsap.utils.selector(section)
-      gsap.from(q('.section-label, .section-heading, [data-reveal]'), {
-        opacity: 0,
-        y,
-        duration,
-        ease: 'power2.out',
-        stagger,
-        scrollTrigger: attachSweep(section, { trigger: section, start: 'top 82%', once: true }),
-      })
+      gsap.fromTo(q('.section-label, .section-heading, [data-reveal]'),
+        { opacity: 0, y },
+        {
+          opacity: 1,
+          y: 0,
+          duration,
+          ease: 'power2.out',
+          stagger,
+          clearProps: 'transform,opacity',
+          scrollTrigger: attachSweep(section, { trigger: section, start: 'top 82%', once: true }),
+        },
+      )
     }
 
     // About: fade + translateY like before, but with a top-edge glow fading in
@@ -151,7 +155,7 @@ export function initAnimations() {
         about.appendChild(topGlow)
       }
       const tl = gsap.timeline({ scrollTrigger: attachSweep(about, { trigger: about, start: 'top 82%', once: true }) })
-      tl.fromTo(topGlow, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0)
+      tl.fromTo(topGlow, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out', clearProps: 'opacity' }, 0)
         .fromTo(qAbout('.section-label, .section-heading, [data-reveal]'),
           { opacity: 0, y: 20 },
           {
@@ -160,20 +164,30 @@ export function initAnimations() {
             duration: 0.6,
             ease: 'power2.out',
             stagger: 0.1,
+            clearProps: 'transform,opacity',
           },
           0.05
         )
       // Skill cards cascade within the merged About section
       const skillContents = qAbout('.skill-card-content')
       skillContents.forEach((content, i) => {
-        tl.from(content, { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out' }, 0.3 + i * 0.12)
-        tl.from(content.querySelectorAll('.skill-pill'), {
-          opacity: 0,
-          y: 8,
-          duration: 0.35,
-          stagger: 0.03,
-          ease: 'power2.out',
-        }, 0.35 + i * 0.12)
+        tl.fromTo(content,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', clearProps: 'transform,opacity' },
+          0.3 + i * 0.12
+        )
+        tl.fromTo(content.querySelectorAll('.skill-pill'),
+          { opacity: 0, y: 8 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.35,
+            stagger: 0.03,
+            ease: 'power2.out',
+            clearProps: 'transform,opacity',
+          },
+          0.35 + i * 0.12
+        )
       })
     }
 
@@ -205,9 +219,33 @@ export function initAnimations() {
             invalidateOnRefresh: true,
           }),
         })
+
+        // Card 0 gets a separate one-shot reveal so it's visible immediately
+        // when the section enters view — not gated behind the scrub timeline
+        // (which only activates at `start: 'top top'` and leaves cards hidden
+        // at progress 0).  Cards 1..N are animated by the scrub.
+        if (featuredCards.length > 1) {
+          gsap.fromTo(featuredCards[0],
+            { opacity: 0, y: 60 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              clearProps: 'transform,opacity',
+              scrollTrigger: {
+                trigger: projectsPinWrap,
+                start: 'top 85%',
+                once: true,
+              },
+            },
+          )
+        }
+
         featuredCards.forEach((card, i) => {
-          const segmentStart = i / featuredCards.length
-          const segmentEnd = (i + 1) / featuredCards.length
+          if (i === 0) return // handled by one-shot above
+          const segmentStart = (i - 1) / (featuredCards.length - 1)
+          const segmentEnd = i / (featuredCards.length - 1)
           tl.fromTo(card,
             { opacity: 0, y: 60 },
             { opacity: 1, y: 0, duration: segmentEnd - segmentStart, ease: 'power2.out' },
@@ -231,14 +269,18 @@ export function initAnimations() {
       if (wrap && line && dots.length) {
         // Heading fires once on scroll-into-view — separate from the scrub
         // timeline so it doesn't hijack pin-range positions.
-        gsap.from(tq('.section-label, .section-heading'), {
-          opacity: 0,
-          y: 20,
-          duration: 0.7,
-          ease: 'power2.out',
-          stagger: 0.12,
-          scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }),
-        })
+        gsap.fromTo(tq('.section-label, .section-heading'),
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power2.out',
+            stagger: 0.12,
+            clearProps: 'transform,opacity',
+            scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }),
+          },
+        )
 
         responsiveMedia.add('(min-width: 768px)', () => {
           if (!track || !inner) return
@@ -277,9 +319,9 @@ export function initAnimations() {
 
         responsiveMedia.add('(max-width: 767px)', () => {
           const tl = gsap.timeline({ scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }) })
-          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0)
+          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, transformOrigin: 'left center', ease: 'power2.out', duration: 0.6, clearProps: 'transform' }, 0)
           dots.forEach((dot, i) => {
-            tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.35 + i * 0.08)
+            tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out', clearProps: 'transform,opacity' }, 0.35 + i * 0.08)
           })
         })
       }
@@ -290,19 +332,14 @@ export function initAnimations() {
     if (certs) {
       const q = gsap.utils.selector(certs)
       const tl = gsap.timeline({ scrollTrigger: attachSweep(certs, { trigger: certs, start: 'top 80%', once: true }) })
-      tl.from(q('.section-label, .section-heading'), {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.1,
-      }).from(q('.cert-card-content'), {
-        opacity: 0,
-        y: 16,
-        duration: 0.55,
-        stagger: 0.1,
-        ease: 'power2.out',
-      }, '-=0.3')
+      tl.fromTo(q('.section-label, .section-heading'),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1, clearProps: 'transform,opacity' }
+      ).fromTo(q('.cert-card-content'),
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.55, stagger: 0.1, ease: 'power2.out', clearProps: 'transform,opacity' },
+        '-=0.3'
+      )
     }
   }, document.body)
 
