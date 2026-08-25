@@ -13,6 +13,7 @@ import { prefersReducedMotion } from './motion'
 //
 // Callers: only React unmount cleanup matters here (this is a single-page app).
 export function initAnimations() {
+  const responsiveMedia = gsap.matchMedia()
   const ctx = gsap.context(() => {
     // ---- Functional scroll UI (always) ----
     const progressBar = document.querySelector('[data-scroll-progress]')
@@ -198,37 +199,74 @@ export function initAnimations() {
     const timeline = document.querySelector('#experience')
     const certs = document.querySelector('#certifications')
 
-    // Projects keeps the working one-shot reveal; no pinning is used here.
+    // Projects keeps a scoped, explicit one-shot reveal for the three featured
+    // cards. CSS hides the content before this async animation module arrives;
+    // fromTo makes the visible end state explicit instead of relying on the
+    // current computed opacity.
     if (projects) {
-      gsap.from('.project-card-content', {
-        opacity: 0,
-        y: 36,
-        duration: 0.7,
-        stagger: 0.18,
-        ease: 'power2.out',
-        scrollTrigger: attachSweep(projects, { trigger: projects, start: 'top 78%', once: true }),
-      })
+      const pq = gsap.utils.selector(projects)
+      gsap.fromTo(
+        pq('.project-card--featured .project-card-content'),
+        { opacity: 0, y: 36 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.18,
+          ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: attachSweep(projects, { trigger: projects, start: 'top 78%', once: true }),
+        }
+      )
     }
 
-    // Timeline is a native horizontal strip. Its heading, line, and dots reveal
-    // once, while the strip itself remains user-scrollable on every viewport.
+    // Timeline uses native horizontal scrolling on small viewports and a
+    // pinned horizontal-scroll sequence on desktop. The pin range is derived
+    // from the actual overflow distance, never a hardcoded viewport estimate.
     if (timeline) {
       const tq = gsap.utils.selector(timeline)
       const wrap = timeline.querySelector('.timeline-horizontal')
+      const track = timeline.querySelector('.timeline-track')
+      const inner = timeline.querySelector('.timeline-track-inner')
       const line = timeline.querySelector('.timeline-line')
       const dots = gsap.utils.toArray('.timeline-dot', wrap)
       if (wrap && line && dots.length) {
-        const tl = gsap.timeline({ scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }) })
-        tl.from(tq('.section-label, .section-heading'), {
-          opacity: 0,
-          y: 20,
-          duration: 0.7,
-          ease: 'power2.out',
-          stagger: 0.12,
-        }, 0)
-        tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0.2)
-        dots.forEach((dot, i) => {
-          tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.35 + i * 0.08)
+        const addDotAndLineReveal = (tl) => {
+          tl.from(tq('.section-label, .section-heading'), {
+            opacity: 0,
+            y: 20,
+            duration: 0.7,
+            ease: 'power2.out',
+            stagger: 0.12,
+          }, 0)
+          tl.fromTo(line, { transformOrigin: 'left center', scaleX: 0 }, { scaleX: 1, ease: 'power2.out', duration: 0.6 }, 0.2)
+          dots.forEach((dot, i) => {
+            tl.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.35 + i * 0.08)
+          })
+        }
+
+        responsiveMedia.add('(min-width: 768px)', () => {
+          if (!track || !inner) return
+          const getDistance = () => Math.max(0, inner.scrollWidth - track.clientWidth)
+          if (getDistance() === 0) return
+          const tl = gsap.timeline({
+            scrollTrigger: attachSweep(timeline, {
+              trigger: timeline,
+              start: 'top top',
+              end: () => `+=${getDistance()}`,
+              pin: timeline,
+              pinSpacing: true,
+              scrub: true,
+              invalidateOnRefresh: true,
+            }),
+          })
+          tl.fromTo(inner, { x: 0 }, { x: () => -getDistance(), ease: 'none', duration: 1 }, 0)
+          addDotAndLineReveal(tl)
+        })
+
+        responsiveMedia.add('(max-width: 767px)', () => {
+          const tl = gsap.timeline({ scrollTrigger: attachSweep(timeline, { trigger: timeline, start: 'top 82%', once: true }) })
+          addDotAndLineReveal(tl)
         })
       }
     }
@@ -255,6 +293,7 @@ export function initAnimations() {
   }, document.body)
 
   return () => {
+    responsiveMedia.revert()
     ctx.revert()
   }
 }

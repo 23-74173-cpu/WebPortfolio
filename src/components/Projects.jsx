@@ -191,7 +191,7 @@ function ProjectCard({ project }) {
         }}
       />
 
-      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content">
+      <div className="relative z-[1] flex flex-col lg:flex-row lg:items-start gap-6 project-card-content motion-safe:opacity-0">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             {project.link && project.link !== 'TODO_ADD_LINK' ? (

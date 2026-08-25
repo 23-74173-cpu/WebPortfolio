@@ -459,11 +459,17 @@ html.custom-cursor * {
   display: flex;
   width: max-content;
   transform: translate3d(0, 0, 0);
-  animation: techMarquee 32s linear infinite;
+  animation: techMarquee 68s linear infinite;
 }
 
 .tech-marquee-track--active {
   will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tech-marquee-band:hover .tech-marquee-track {
+    animation-play-state: paused;
+  }
 }
 
 .tech-marquee-set {
@@ -798,6 +804,10 @@ main > section:first-child::before {
   padding: 0 0.25rem;
 }
 
+.timeline-item {
+  flex: 0 0 min(78vw, 24rem);
+}
+
 .timeline-line {
   position: absolute;
   top: 11px;
@@ -821,8 +831,20 @@ main > section:first-child::before {
 }
 
 @media (min-width: 768px) {
+  #experience {
+    min-height: 100svh;
+  }
+
+  .timeline-track {
+    overflow-x: hidden;
+  }
+
   .timeline-track-inner {
     gap: 2rem;
+  }
+
+  .timeline-item {
+    flex-basis: clamp(20rem, 40vw, 28rem);
   }
 }
 
