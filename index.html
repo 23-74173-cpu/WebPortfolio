@@ -46,6 +46,9 @@
         const isDay = hour >= 6 && hour < 18
         const shouldBeLight = saved === 'light' || (saved === null && isDay)
         if (shouldBeLight) document.documentElement.classList.add('light')
+        // Prevent browser scroll restoration — we always start at the top.
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+        window.scrollTo(0, 0)
       })()
     </script>
     <script>
