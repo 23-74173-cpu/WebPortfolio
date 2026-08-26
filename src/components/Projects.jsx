@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { useTheme } from '../hooks/useTheme'
 import { projects } from '../data/content'
@@ -52,6 +52,7 @@ export default function Projects() {
   const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState(false)
   const restRef = useRef(null)
+  const pinWrapRef = useRef(null)
 
   const filtered = filter === 'all'
     ? projects
@@ -72,12 +73,37 @@ export default function Projects() {
     prevExpanded.current = showAll
   }, [showAll])
 
+  // When expanded state changes, tell the GSAP scroll system to recalculate
+  // pin spacer heights so Timeline (and everything after) repositions correctly.
+  useLayoutEffect(() => {
+    window.__projectsExpanded = showAll
+    // Import lazily — the module is already loaded by the time the idle
+    // callback fires, so this resolves synchronously.
+    import('../lib/animations').then(m => {
+      m.refreshProjectsPin?.()
+    })
+  }, [showAll])
+
+  // Clean up the projects pin on unmount (animations created by
+  // refreshProjectsPin live outside the gsap.context, so ctx.revert()
+  // won't catch them).
+  useEffect(() => {
+    return () => {
+      import('../lib/animations').then(m => m.cleanupProjectsPin?.())
+    }
+  }, [])
+
   return (
     <section
       id="projects"
+      data-expanded={showAll || undefined}
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
-      <div id="projects-pin-wrap" className="max-w-6xl mx-auto px-5 pt-20 pb-4 relative">
+      <div
+        id="projects-pin-wrap"
+        ref={pinWrapRef}
+        className="max-w-6xl mx-auto px-5 pt-20 pb-4 relative"
+      >
         {/* Header: z-20 so it stays ABOVE stacking cards (z-10). */}
         <div className="relative z-20">
           <span className="section-label">Featured Projects</span>
@@ -109,9 +135,10 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* Toggle: sits directly under the card stack, inside the pin. */}
+        {/* Toggle: hidden until ScrollTrigger signals the 3-card stack is settled
+            (via data-expand-ready on #projects). */}
         {filter === 'all' && rest.length > 0 && (
-          <div className="mt-4 flex justify-center relative z-20">
+          <div className="mt-4 flex justify-center relative z-20 projects-expand-btn-wrap">
             <button
               type="button"
               onClick={() => setExpanded(e => !e)}
@@ -130,28 +157,30 @@ export default function Projects() {
             </button>
           </div>
         )}
-      </div>
 
-      {/* Collapsible grid of non-featured projects — lives outside the pin. */}
-      {rest.length > 0 && (
-        <div className="max-w-6xl mx-auto px-5 pb-28">
-          <div
-            id="projects-rest"
-            ref={restRef}
-            tabIndex={-1}
-            className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
-            style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
-          >
-            <div className="overflow-hidden min-h-0">
-              <div className="mt-8 space-y-8">
-                {rest.map((project, i) => (
-                  <ProjectCard key={project.id} project={project} index={i} />
-                ))}
+        {/* Collapsible grid of non-featured projects — NOW inside the pin
+            wrapper so expanded cards participate in the pinned scroll region.
+            This prevents overlap with Timeline after expansion. */}
+        {rest.length > 0 && (
+          <div className="mt-6 relative z-10">
+            <div
+              id="projects-rest"
+              ref={restRef}
+              tabIndex={-1}
+              className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
+              style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
+            >
+              <div className="overflow-hidden min-h-0">
+                <div className="mt-8 space-y-8">
+                  {rest.map((project, i) => (
+                    <ProjectCard key={project.id} project={project} index={i} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   )
 }
