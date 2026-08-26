@@ -251,17 +251,11 @@ export function initAnimations() {
             },
             segStart,
           )
-        })
 
-        // Blur ALL cards below the current top card as it slides into place.
-        // When card i appears, blur cards 0..i-1 so the stack fades into blur
-        // beneath the active card.
-        featuredCards.forEach((card, i) => {
-          if (i === 0) return
-          const segDuration = 1 / (featuredCards.length - 1)
-          const segStart = (i - 1) * segDuration
-          for (let j = 0; j < i; j++) {
-            tl.to(featuredCards[j],
+          // Blur out the card being covered (card i-1) as card i slides over it.
+          const coveredCard = featuredCards[i - 1]
+          if (coveredCard) {
+            tl.to(coveredCard,
               {
                 filter: 'blur(8px)',
                 duration: segDuration,
