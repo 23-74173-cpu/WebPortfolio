@@ -108,8 +108,31 @@ export default function Projects() {
             <ProjectCard key={project.id} project={project} index={i} total={featured.length} />
           ))}
         </div>
+
+        {/* Toggle: sits directly under the card stack, inside the pin. */}
+        {filter === 'all' && rest.length > 0 && (
+          <div className="mt-4 flex justify-center relative z-20">
+            <button
+              type="button"
+              onClick={() => setExpanded(e => !e)}
+              aria-expanded={showAll}
+              aria-controls="projects-rest"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
+              style={{
+                borderColor: 'var(--text-muted)',
+                color: 'var(--text-muted)',
+              }}
+            >
+              {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Collapsible grid of non-featured projects — lives outside the pin. */}
       {rest.length > 0 && (
         <div className="max-w-6xl mx-auto px-5 pb-28">
           <div
@@ -127,27 +150,6 @@ export default function Projects() {
               </div>
             </div>
           </div>
-
-          {filter === 'all' && (
-            <div className="mt-10 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setExpanded(e => !e)}
-                aria-expanded={showAll}
-                aria-controls="projects-rest"
-                className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
-                style={{
-                  borderColor: 'var(--text-muted)',
-                  color: 'var(--text-muted)',
-                }}
-              >
-                {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </button>
-            </div>
-          )}
         </div>
       )}
     </section>
