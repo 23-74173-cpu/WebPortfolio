@@ -241,15 +241,35 @@ export function initAnimations() {
 
           // Fade in: card starts invisible, becomes visible as it enters
           tl.fromTo(card,
-            { opacity: 0, y: 0 },
+            { opacity: 0, y: 0, filter: 'blur(0px)' },
             {
               opacity: 1,
               y: () => -overlapPx * i,
+              filter: 'blur(0px)',
               duration: segDuration,
               ease: 'power2.out',
             },
             segStart,
           )
+        })
+
+        // Blur ALL cards below the current top card as it slides into place.
+        // When card i appears, blur cards 0..i-1 so the stack fades into blur
+        // beneath the active card.
+        featuredCards.forEach((card, i) => {
+          if (i === 0) return
+          const segDuration = 1 / (featuredCards.length - 1)
+          const segStart = (i - 1) * segDuration
+          for (let j = 0; j < i; j++) {
+            tl.to(featuredCards[j],
+              {
+                filter: 'blur(8px)',
+                duration: segDuration,
+                ease: 'power2.inOut',
+              },
+              segStart,
+            )
+          }
         })
       }
     }

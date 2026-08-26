@@ -588,6 +588,16 @@ html.custom-cursor * {
   background: linear-gradient(180deg, rgba(42, 93, 168, 0.10), transparent 92%);
 }
 
+/* Prevent flash-of-content before GSAP ScrollTrigger initializes the About
+   section reveal. Elements start hidden; GSAP fromTo overrides with inline
+   styles once the trigger fires. */
+#about .section-label,
+#about .section-heading,
+#about [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
 /* Featured project-card entrance + hover. Hover is gated to no-preference so
    reduced-motion users get a static card (transform/shadow/border changes are
    also reset in the reduce block below). */
@@ -922,4 +932,8 @@ main > section:first-child::before {
   }
   .project-card-image { transition: none; }
   .project-card-number { opacity: 0.18 !important; }
+  #projects-pin-wrap .project-card--featured { filter: none !important; }
+  #about .section-label,
+  #about .section-heading,
+  #about [data-reveal] { opacity: 1; transform: none; }
 }
