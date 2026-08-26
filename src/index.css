@@ -631,24 +631,6 @@ html.custom-cursor * {
   opacity: 0.22 !important;
 }
 
-/* "View all projects" button: hidden until the 3-card stacking sequence
-   settles.  .projects-expand-ready is toggled by ScrollTrigger's onUpdate
-   callback once the pin progress reaches ~95% of the stacking portion. */
-.projects-expand-btn-wrap {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-#projects.projects-expand-ready .projects-expand-btn-wrap {
-  opacity: 1;
-  pointer-events: auto;
-}
-/* When already expanded the button is always visible (says "Show fewer"). */
-#projects[data-expanded="true"] .projects-expand-btn-wrap {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 @keyframes floatOrb {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(30px, -40px) scale(1.1); }

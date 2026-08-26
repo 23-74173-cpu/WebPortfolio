@@ -1,101 +1,6 @@
 import { gsap, ScrollTrigger } from './gsap'
 import { prefersReducedMotion } from './motion'
 
-// Module-level state for the Projects pin so it can be torn down and rebuilt
-// when the expanded set changes (dynamic card count).
-let _projectsST = null
-let _projectsTL = null
-
-// Called by Projects.jsx (via useLayoutEffect) after the expanded/collapsed
-// DOM update commits.  Kills the old pin, rebuilds it for the current card
-// count, then tells ScrollTrigger to recalculate every pin spacer on the page
-// (fixes the overlap with Timeline that follows).
-export function refreshProjectsPin() {
-  _projectsST?.kill()
-  _projectsTL?.kill()
-  _projectsST = null
-  _projectsTL = null
-  _buildProjectsPin()
-  ScrollTrigger.refresh()
-}
-
-// Teardown helper for React unmount (refreshProjectsPin creates animations
-// outside the gsap.context, so ctx.revert() won't catch them).
-export function cleanupProjectsPin() {
-  _projectsST?.kill()
-  _projectsTL?.kill()
-  _projectsST = null
-  _projectsTL = null
-}
-
-function _buildProjectsPin() {
-  // Kill any existing pin first (guards against double-init when
-  // initAnimations and a useLayoutEffect refresh overlap).
-  _projectsST?.kill()
-  _projectsTL?.kill()
-  _projectsST = null
-  _projectsTL = null
-
-  const projectsPinWrap = document.querySelector('#projects-pin-wrap')
-  if (!projectsPinWrap || window.innerWidth < 768) return
-  // Under reduced motion the initial pin is never created (initAnimations
-  // returns early).  Don't create one from refreshProjectsPin either —
-  // expanded cards should remain a plain scrollable list.
-  if (prefersReducedMotion()) return
-
-  const allCards = gsap.utils.selector(projectsPinWrap)('.project-card')
-  if (allCards.length <= 1) return
-
-  const expanded = !!window.__projectsExpanded
-  const featuredCount = gsap.utils.selector(projectsPinWrap)('.project-card--featured').length
-  const stackingCount = expanded ? allCards.length : Math.min(featuredCount, allCards.length)
-
-  const firstCardHeight = allCards[0].offsetHeight || 400
-  const overlapPx = Math.round(firstCardHeight * 0.75)
-
-  const stackingDist = Math.max(0, stackingCount - 1) * window.innerHeight * 0.8
-  const restGrid = projectsPinWrap.querySelector('#projects-rest')
-  const restHeight = expanded && restGrid ? restGrid.scrollHeight : 0
-
-  const getPinDistance = () => stackingDist + restHeight
-
-  const st = ScrollTrigger.create({
-    trigger: projectsPinWrap,
-    start: 'top top',
-    end: () => `+=${getPinDistance()}`,
-    pin: true,
-    pinSpacing: true,
-    scrub: true,
-    invalidateOnRefresh: true,
-    onUpdate(self) {
-      const section = document.querySelector('#projects')
-      if (!section) return
-      const stackFraction = stackingDist / (stackingDist + restHeight || 1)
-      const shouldShow = expanded || self.progress >= stackFraction * 0.95
-      section.classList.toggle('projects-expand-ready', shouldShow)
-    },
-  })
-
-  _projectsTL = gsap.timeline({ scrollTrigger: st })
-
-  for (let i = 1; i < stackingCount; i++) {
-    const segDuration = 1 / (stackingCount - 1)
-    const segStart = (i - 1) * segDuration
-    _projectsTL.fromTo(allCards[i],
-      { opacity: 0, y: 0 },
-      {
-        opacity: 1,
-        y: () => -overlapPx * i,
-        duration: segDuration,
-        ease: 'power2.out',
-      },
-      segStart,
-    )
-  }
-
-  _projectsST = st
-}
-
 // Single scroll-driven animation system. Dynamically imported (idle-loaded) so
 // GSAP never touches the critical path. Replaces the old useInView reveals and
 // the raw rAF scroll listeners (Hero/ScrollProgress/BackToTop/Navbar) with one
@@ -295,16 +200,57 @@ export function initAnimations() {
     const timeline = document.querySelector('#experience')
     const certs = document.querySelector('#certifications')
 
-    // Projects stacked-card reveal: pin the wrapper and animate cards 1..N
-    // upward to stack over card 0 as the user scrolls.  Built as a separate
-    // function so it can be torn down and rebuilt by refreshProjectsPin() when
-    // the expanded card set changes.
+    // Projects stacked-card reveal: pin the featured cards wrapper and
+    // animate cards 1..N upward to stack over card 0 as the user scrolls.
+    // Card 0 is the anchor — always visible. Cards 1+ start hidden (opacity 0)
+    // and slide up with a large overlap (~75% of card height) so they
+    // progressively cover the previous card. Each card gets equal scroll distance.
+    // Mobile falls back to normal list.
     if (projectsPinWrap && window.innerWidth >= 768) {
-      _buildProjectsPin()
-      // Sweep divider: one-shot beam on section enter (decorative, not tied to pin).
-      if (projects) {
-        const sweepCfg = attachSweep(projects, { trigger: projects, start: 'top 82%', once: true })
-        ScrollTrigger.create(sweepCfg)
+      const featuredCards = gsap.utils.selector(projectsPinWrap)('.project-card--featured')
+      if (featuredCards.length > 1) {
+        // Measure actual card height for overlap calculation
+        const firstCardHeight = featuredCards[0].offsetHeight || 400
+        const overlapPx = Math.round(firstCardHeight * 0.75)
+
+        // Pin distance: 0.8 × viewport per card transition (tighter than 1.0
+        // to avoid large empty gaps below the card stack after pin releases).
+        const getPinDistance = () => (featuredCards.length - 1) * window.innerHeight * 0.8
+        const tl = gsap.timeline({
+          scrollTrigger: attachSweep(projects, {
+            trigger: projectsPinWrap,
+            start: 'top top',
+            end: () => `+=${getPinDistance()}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+          }),
+        })
+
+        // Card 0 stays visible as the anchor — always at opacity 1, y 0
+        // (its natural document-flow position).
+
+        // Cards 1..N each start hidden, then fade in and slide upward to
+        // stack over the previous card. The large overlap (~75% card height)
+        // creates a dramatic stacked-card effect.
+        featuredCards.forEach((card, i) => {
+          if (i === 0) return
+          const segDuration = 1 / (featuredCards.length - 1)
+          const segStart = (i - 1) * segDuration
+
+          // Fade in: card starts invisible, becomes visible as it enters
+          tl.fromTo(card,
+            { opacity: 0, y: 0 },
+            {
+              opacity: 1,
+              y: () => -overlapPx * i,
+              duration: segDuration,
+              ease: 'power2.out',
+            },
+            segStart,
+          )
+        })
       }
     }
 
