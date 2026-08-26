@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useMouseGlow } from '../hooks/useMouseGlow'
 import { useTheme } from '../hooks/useTheme'
 import { projects } from '../data/content'
@@ -50,27 +50,12 @@ const techPillColors = [
 
 export default function Projects() {
   const [filter, setFilter] = useState('all')
-  const [expanded, setExpanded] = useState(false)
-  const restRef = useRef(null)
 
   const filtered = filter === 'all'
     ? projects
     : projects.filter(p => p.status === filter)
 
   const featured = filtered.filter(p => p.featured)
-  const rest = filtered.filter(p => !p.featured)
-
-  // A filter signals active searching, so auto-expand the collapsed group
-  // whenever one is applied; returning to "All" collapses it again.
-  const showAll = expanded || filter !== 'all'
-
-  const prevExpanded = useRef(showAll)
-  useEffect(() => {
-    if (showAll && !prevExpanded.current) {
-      restRef.current?.focus()
-    }
-    prevExpanded.current = showAll
-  }, [showAll])
 
   return (
     <section
@@ -108,50 +93,7 @@ export default function Projects() {
             <ProjectCard key={project.id} project={project} index={i} total={featured.length} />
           ))}
         </div>
-
-        {/* Toggle: sits directly under the card stack, inside the pin. */}
-        {filter === 'all' && rest.length > 0 && (
-          <div className="mt-4 flex justify-center relative z-20">
-            <button
-              type="button"
-              onClick={() => setExpanded(e => !e)}
-              aria-expanded={showAll}
-              aria-controls="projects-rest"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border text-sm font-medium rounded font-body transition-colors duration-150"
-              style={{
-                borderColor: 'var(--text-muted)',
-                color: 'var(--text-muted)',
-              }}
-            >
-              {showAll ? 'Show fewer projects' : `View all projects (${rest.length} more)`}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 200ms ease' }}>
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-          </div>
-        )}
       </div>
-
-      {/* Collapsible grid of non-featured projects — lives outside the pin. */}
-      {rest.length > 0 && (
-        <div className="max-w-6xl mx-auto px-5 pb-28">
-          <div
-            id="projects-rest"
-            ref={restRef}
-            tabIndex={-1}
-            className="grid transition-[grid-template-rows] duration-500 ease-out motion-safe:transition-[grid-template-rows] motion-safe:duration-500 motion-safe:ease-out"
-            style={{ gridTemplateRows: showAll ? '1fr' : '0fr' }}
-          >
-            <div className="overflow-hidden min-h-0">
-              <div className="mt-8 space-y-8">
-                {rest.map((project, i) => (
-                  <ProjectCard key={project.id} project={project} index={i} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
