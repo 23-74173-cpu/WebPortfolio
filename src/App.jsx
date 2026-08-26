@@ -66,10 +66,15 @@ export default function App() {
         <main>
           <Hero />
           <TechMarquee />
+          <div className="section-stopper" aria-hidden="true" />
           <About />
+          <div className="section-stopper" aria-hidden="true" />
           <Projects />
+          <div className="section-stopper" aria-hidden="true" />
           <Timeline />
+          <div className="section-stopper" aria-hidden="true" />
           <Certifications />
+          <div className="section-stopper" aria-hidden="true" />
           <Contact />
         </main>
         <Footer />

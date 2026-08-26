@@ -77,33 +77,37 @@ export default function Projects() {
       id="projects"
       style={{ backgroundColor: 'var(--bg-body)' }}
     >
-      <div className="max-w-6xl mx-auto px-5 pt-20 pb-4">
-        <span className="section-label">Featured Projects</span>
-        <h2 className="section-heading mt-3">
-          Production systems I&rsquo;ve built
-        </h2>
+      <div id="projects-pin-wrap" className="max-w-6xl mx-auto px-5 pt-20 pb-4 relative">
+        {/* Header: z-20 so it stays ABOVE stacking cards (z-10). */}
+        <div className="relative z-20">
+          <span className="section-label">Featured Projects</span>
+          <h2 className="section-heading mt-3">
+            Production systems I&rsquo;ve built
+          </h2>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {filterOptions.map(opt => (
-            <button
-              key={opt.value}
-              onClick={() => setFilter(opt.value)}
-              className="text-xs font-mono px-3 py-1.5 rounded-full transition-all duration-150"
-              style={{
-                backgroundColor: filter === opt.value ? 'var(--signal-dark)' : 'var(--bg-tag)',
-                color: filter === opt.value ? '#fff' : 'var(--text-muted)',
-              }}
-            >
-              {opt.label}
-            </button>
+          <div className="mt-8 flex flex-wrap gap-2">
+            {filterOptions.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setFilter(opt.value)}
+                className="text-xs font-mono px-3 py-1.5 rounded-full transition-all duration-150"
+                style={{
+                  backgroundColor: filter === opt.value ? 'var(--signal-dark)' : 'var(--bg-tag)',
+                  color: filter === opt.value ? '#fff' : 'var(--text-muted)',
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Card stack: z-10 so cards layer BELOW the header. */}
+        <div className="mt-6 relative z-10">
+          {featured.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} total={featured.length} />
           ))}
         </div>
-      </div>
-
-      <div id="projects-pin-wrap" className="max-w-6xl mx-auto px-5 mt-6 relative">
-        {featured.map((project, i) => (
-          <ProjectCard key={project.id} project={project} index={i} total={featured.length} />
-        ))}
       </div>
 
       {rest.length > 0 && (

@@ -213,7 +213,9 @@ export function initAnimations() {
         const firstCardHeight = featuredCards[0].offsetHeight || 400
         const overlapPx = Math.round(firstCardHeight * 0.75)
 
-        const getPinDistance = () => (featuredCards.length - 1) * window.innerHeight
+        // Pin distance: 0.8 × viewport per card transition (tighter than 1.0
+        // to avoid large empty gaps below the card stack after pin releases).
+        const getPinDistance = () => (featuredCards.length - 1) * window.innerHeight * 0.8
         const tl = gsap.timeline({
           scrollTrigger: attachSweep(projects, {
             trigger: projectsPinWrap,
