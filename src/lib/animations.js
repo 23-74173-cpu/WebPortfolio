@@ -241,29 +241,15 @@ export function initAnimations() {
 
           // Fade in: card starts invisible, becomes visible as it enters
           tl.fromTo(card,
-            { opacity: 0, y: 0, filter: 'blur(0px)' },
+            { opacity: 0, y: 0 },
             {
               opacity: 1,
               y: () => -overlapPx * i,
-              filter: 'blur(0px)',
               duration: segDuration,
               ease: 'power2.out',
             },
             segStart,
           )
-
-          // Blur out the card being covered (card i-1) as card i slides over it.
-          const coveredCard = featuredCards[i - 1]
-          if (coveredCard) {
-            tl.to(coveredCard,
-              {
-                filter: 'blur(8px)',
-                duration: segDuration,
-                ease: 'power2.inOut',
-              },
-              segStart,
-            )
-          }
         })
       }
     }

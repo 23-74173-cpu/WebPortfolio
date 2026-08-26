@@ -922,5 +922,4 @@ main > section:first-child::before {
   }
   .project-card-image { transition: none; }
   .project-card-number { opacity: 0.18 !important; }
-  #projects-pin-wrap .project-card--featured { filter: none !important; }
 }
